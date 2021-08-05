@@ -1,14 +1,13 @@
 import 'normalize.css'
 import styles from './Styles/App.module.sass';
+import {Message} from './Message.js'
 
 
 
-function App(props) {
+export function App() {
   return (
     <div className={styles.app}>
-      Hello, {props.name}!
+      <Message text="Hello World" />
     </div>
   );
 }
-
-export default App;
