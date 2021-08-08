@@ -1,8 +1,36 @@
+import {
+  TextField,
+  InputAdornment,
+  IconButton,
+  makeStyles,
+} from "@material-ui/core"
+import { Send } from "@material-ui/icons"
 import { useState, useEffect } from "react"
 import { Message } from "../message"
-import styles from "./MessageList.module.sass"
+
+const useStyles = makeStyles({
+  messageList: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  },
+  messageForm: {
+    minWidth: "400px",
+    padding: "5px",
+    position: "fixed",
+    bottom: "10px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "transparent",
+  },
+  messageInput: {
+    backgroundColor: "#e0f2f1",
+  },
+})
 
 export const MessageList = () => {
+  const classes = useStyles()
+
   const [messageList, setMessageList] = useState([])
   const [value, setValue] = useState("")
 
@@ -31,21 +59,31 @@ export const MessageList = () => {
 
   return (
     <>
-      {messageList.map((message) => (
-        <Message message={message} key={message.id} />
-      ))}
+      <div className={classes.messageList}>
+        {messageList.map((message) => (
+          <Message message={message} key={message.id} />
+        ))}
+      </div>
 
-      <div className={styles.messageForm}>
-        <input
+      <div className={classes.messageForm}>
+        <TextField
           type="text"
-          className="message-input"
-          placeholder="Your Message"
+          className={classes.messageInput}
+          fullWidth={true}
+          label="Your Message"
+          variant="filled"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={sendMessage} color="primary">
+                  <Send />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <button className="message-send" onClick={sendMessage}>
-          Send
-        </button>
       </div>
     </>
   )
