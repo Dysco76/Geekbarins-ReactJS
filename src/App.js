@@ -5,14 +5,16 @@ import { Message } from "./components/Message.js";
 
 export function App() {
   const [messageList, setMessageList] = useState([]);
-  const [text, setText] = useState("");
-  const [author, setAuthor] = useState("");
+  const [value, setValue] = useState("");
+  const [author, setAuthor] = useState("Anonymous");
 
   const sendMessage = () => {
     setMessageList((messages) => [
       ...messages,
-      { text, author: author || "Anonymous", id: Date.now() },
+      { value: value, author, id: Date.now() },
     ]);
+
+    setValue("");
   };
 
   useEffect(() => {
@@ -23,11 +25,9 @@ export function App() {
       setTimeout(() => {
         setMessageList((messages) => [
           ...messages,
-          { text: `Echo: ${text}`, author: "bot", id: Date.now() },
+          { value: "Hello from bot!", author: "bot", id: Date.now() },
         ]);
       }, 1500);
-
-      setText("");
     }
   }, [messageList]);
 
@@ -50,8 +50,8 @@ export function App() {
           type="text"
           className="message-input"
           placeholder="Your Message"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         ></input>
         <button className="message-send" onClick={sendMessage}>
           Send
