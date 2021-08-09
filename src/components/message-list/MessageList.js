@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "space-between",
     background: "rgb(92,207,104)",
-    background:
+    backgroundImage:
       "linear-gradient(25deg, rgba(92,207,104,1) 11%, rgba(0,212,255,1) 96%)",
   },
   messageList: {
