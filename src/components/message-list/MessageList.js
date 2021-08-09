@@ -5,7 +5,7 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Message } from "../message"
 
 const useStyles = makeStyles({
@@ -38,6 +38,7 @@ export const MessageList = () => {
 
   const [messageList, setMessageList] = useState([])
   const [value, setValue] = useState("")
+  const inputEl = useRef(null)
 
   const sendMessage = () => {
     setMessageList((messages) => [
@@ -60,6 +61,8 @@ export const MessageList = () => {
         ])
       }, 1500)
     }
+
+    inputEl.current.focus()
   }, [messageList])
 
   return (
@@ -72,6 +75,7 @@ export const MessageList = () => {
 
       <div className={classes.messageForm}>
         <TextField
+          inputRef={inputEl}
           type="text"
           className={classes.messageInput}
           fullWidth={true}
