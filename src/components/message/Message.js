@@ -20,7 +20,6 @@ const useStyles = makeStyles({
   },
 
   messageContent: {
-    margin: 0,
     fontSize: "20px",
   },
 
@@ -39,9 +38,9 @@ export function Message({ message: { value, author } }) {
       }`}
       elevation={3}
     >
-      <p className={classes.messageContent}>
+      <div className={classes.messageContent}>
         <p className={classes.author}>{author}:</p> {value}
-      </p>
+      </div>
     </Paper>
   )
 }

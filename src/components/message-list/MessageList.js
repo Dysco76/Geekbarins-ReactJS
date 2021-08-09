@@ -9,19 +9,24 @@ import { useState, useEffect } from "react"
 import { Message } from "../message"
 
 const useStyles = makeStyles({
+  wrapper: {
+    position: "relative",
+    minHeight: "90vh",
+    padding: "20px",
+    boxSizing: "border-box",
+  },
   messageList: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
   },
   messageForm: {
-    minWidth: "400px",
-    padding: "5px",
-    position: "fixed",
+    width: "95%",
+    position: "absolute",
     bottom: "10px",
+    backgroundColor: "transparent",
     left: "50%",
     transform: "translateX(-50%)",
-    backgroundColor: "transparent",
   },
   messageInput: {
     backgroundColor: "#e0f2f1",
@@ -58,7 +63,7 @@ export const MessageList = () => {
   }, [messageList])
 
   return (
-    <>
+    <div className={classes.wrapper}>
       <div className={classes.messageList}>
         {messageList.map((message) => (
           <Message message={message} key={message.id} />
@@ -85,6 +90,6 @@ export const MessageList = () => {
           }}
         />
       </div>
-    </>
+    </div>
   )
 }
