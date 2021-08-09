@@ -9,7 +9,17 @@ import {
 import { Group } from "@material-ui/icons"
 import { useState } from "react"
 
+const useStyles = makeStyles({
+  wrapper: {
+    height: "100vh",
+    boxSizing: "border-box",
+    border: "1px solid #BDBDBD",
+  },
+})
+
 export const ChatList = () => {
+  const classes = useStyles()
+
   const [chatList, setChatList] = useState([
     { id: "1", name: "Work" },
     { id: "2", name: "Friends" },
@@ -17,7 +27,7 @@ export const ChatList = () => {
   ])
 
   return (
-    <List component="nav">
+    <List component="nav" className={classes.wrapper}>
       {chatList.map((chat) => {
         return (
           <ListItem key={chat.id} button={true}>
