@@ -61,7 +61,11 @@ export const MessageList = ({
   }
 
   const handleSendMessage = () => {
-    if (currentInput) sendMessage({ message: currentInput, author: "User" })
+    if (currentInput)
+      sendMessage({
+        message: currentInput,
+        author: "User",
+      })
   }
 
   return (

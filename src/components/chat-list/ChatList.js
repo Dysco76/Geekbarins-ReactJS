@@ -18,6 +18,10 @@ const useStyles = makeStyles({
   chatBlock: {
     textDecoration: "none",
   },
+
+  chatTitle: {
+    color: "#000",
+  },
 })
 
 export const ChatList = ({ conversations, allMessages }) => {
@@ -27,8 +31,13 @@ export const ChatList = ({ conversations, allMessages }) => {
   return (
     <List component="nav" className={classes.wrapper}>
       {conversations.map((chat) => {
-        const lastMessage =
+        const { author, message, date } =
           allMessages[chat.id][allMessages[chat.id].length - 1]
+
+        const messageText =
+          (author + message).length > 26
+            ? message.slice(0, 26 - author.length) + "..."
+            : message
 
         return (
           <Link
@@ -43,8 +52,16 @@ export const ChatList = ({ conversations, allMessages }) => {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={chat.title}
-                secondary={`${lastMessage.author}: ${lastMessage.message}`}
+                primary={
+                  <span className={classes.chatTitle}>{chat.title}</span>
+                }
+                secondary={
+                  <>
+                    {`${author}: ${messageText}`}
+                    <br />
+                    <sub>{date}</sub>
+                  </>
+                }
               />
             </ListItem>
           </Link>
