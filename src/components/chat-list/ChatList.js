@@ -7,7 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Group } from "@material-ui/icons"
-import { useState } from "react"
+import { Link, useParams } from "react-router-dom"
 
 const useStyles = makeStyles({
   wrapper: {
@@ -17,27 +17,24 @@ const useStyles = makeStyles({
   },
 })
 
-export const ChatList = () => {
+export const ChatList = ({ conversations }) => {
   const classes = useStyles()
-
-  const [chatList, setChatList] = useState([
-    { id: "1", name: "Work" },
-    { id: "2", name: "Friends" },
-    { id: "3", name: "Family" },
-  ])
+  const { roomId } = useParams()
 
   return (
     <List component="nav" className={classes.wrapper}>
-      {chatList.map((chat) => {
+      {conversations.map((chat) => {
         return (
-          <ListItem key={chat.id} button={true}>
-            <ListItemAvatar>
-              <Avatar>
-                <Group />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={chat.name} />
-          </ListItem>
+          <Link key={chat.id} to={`/chat/${chat.id}`}>
+            <ListItem button={true} selected={roomId === chat.id}>
+              <ListItemAvatar>
+                <Avatar>
+                  <Group />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={chat.title} />
+            </ListItem>
+          </Link>
         )
       })}
     </List>

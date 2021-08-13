@@ -58,17 +58,17 @@ const useStyles = makeStyles({
   sb1: {},
 })
 
-export function Message({ message: { value, author } }) {
+export function Message({ message: { message, author } }) {
   const classes = useStyles()
   return (
     <Paper
       className={`${classes.message} ${classes.sb1} ${
-        author === "bot" ? classes.messageIncoming : ""
+        author !== "User" ? classes.messageIncoming : ""
       }`}
       elevation={3}
     >
       <div className={classes.messageContent}>
-        <p className={classes.author}>{author}:</p> {value}
+        <p className={classes.author}>{author}:</p> {message}
       </div>
     </Paper>
   )
