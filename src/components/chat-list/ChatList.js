@@ -35,8 +35,8 @@ export const ChatList = ({ conversations, allMessages }) => {
           allMessages[chat.id][allMessages[chat.id].length - 1]
 
         const messageText =
-          (author + message).length > 26
-            ? message.slice(0, 26 - author.length) + "..."
+          (author + message).length > 30
+            ? message.slice(0, 30 - author.length) + "..."
             : message
 
         return (

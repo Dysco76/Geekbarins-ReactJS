@@ -6,7 +6,7 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
-import { useRef } from "react"
+import { useRef, useCallback, useEffect } from "react"
 import { Message } from "../"
 
 const useStyles = makeStyles({
@@ -52,7 +52,8 @@ export const MessageList = ({
   sendMessage,
 }) => {
   const classes = useStyles()
-  const inputEl = useRef(null)
+
+  const messageList = useRef(null)
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
@@ -68,9 +69,19 @@ export const MessageList = ({
       })
   }
 
+  const handleScrollBottom = useCallback(() => {
+    if (messageList.current) {
+      messageList.current.scrollTo(0, messageList.current.scrollHeight)
+    }
+  }, [messages])
+
+  useEffect(() => {
+    handleScrollBottom()
+  }, [handleScrollBottom])
+
   return (
     <div className={classes.wrapper}>
-      <div className={classes.messageList}>
+      <div ref={messageList} className={classes.messageList}>
         {messages.map((message) => (
           <Message message={message} key={message.id} />
         ))}
@@ -78,7 +89,6 @@ export const MessageList = ({
 
       <Paper elevation={3} className={classes.messageForm}>
         <TextField
-          inputRef={inputEl}
           type="text"
           className={classes.messageInput}
           fullWidth={true}
