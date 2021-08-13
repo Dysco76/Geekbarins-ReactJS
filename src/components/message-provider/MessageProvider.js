@@ -35,6 +35,7 @@ export const MessageProvider = ({ children }) => {
       messages: messages[roomId],
       currentInput: conversations.find((chat) => chat.id === roomId)
         ?.currentInput,
+      chatExists: conversations.some((chat) => chat.id === roomId),
     }),
     [conversations, messages, roomId],
   )
@@ -62,7 +63,7 @@ export const MessageProvider = ({ children }) => {
 
   useEffect(() => {
     let timer
-    if (roomId) {
+    if (state.chatExists) {
       const lastMessage = messages[roomId][messages[roomId].length - 1]
 
       if (lastMessage.author === "User") {
@@ -72,7 +73,7 @@ export const MessageProvider = ({ children }) => {
       }
       return () => clearTimeout(timer)
     }
-  }, [messages, actions, roomId])
+  }, [messages, state, actions, roomId])
 
   return children([state, actions])
 }
