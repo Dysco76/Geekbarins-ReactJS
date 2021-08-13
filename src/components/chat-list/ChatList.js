@@ -15,24 +15,37 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     border: "1px solid #BDBDBD",
   },
+  chatBlock: {
+    textDecoration: "none",
+  },
 })
 
-export const ChatList = ({ conversations }) => {
+export const ChatList = ({ conversations, allMessages }) => {
   const classes = useStyles()
   const { roomId } = useParams()
 
   return (
     <List component="nav" className={classes.wrapper}>
       {conversations.map((chat) => {
+        const lastMessage =
+          allMessages[chat.id][allMessages[chat.id].length - 1]
+
         return (
-          <Link key={chat.id} to={`/chat/${chat.id}`}>
+          <Link
+            key={chat.id}
+            to={`/chat/${chat.id}`}
+            className={classes.chatBlock}
+          >
             <ListItem button={true} selected={roomId === chat.id}>
               <ListItemAvatar>
                 <Avatar>
                   <Group />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={chat.title} />
+              <ListItemText
+                primary={chat.title}
+                secondary={`${lastMessage.author}: ${lastMessage.message}`}
+              />
             </ListItem>
           </Link>
         )

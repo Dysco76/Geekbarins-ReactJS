@@ -32,6 +32,7 @@ export const MessageProvider = ({ children }) => {
   const state = useMemo(
     () => ({
       conversations,
+      allMessages: messages,
       messages: messages[roomId],
       currentInput: conversations.find((chat) => chat.id === roomId)
         ?.currentInput,
