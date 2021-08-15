@@ -82,7 +82,7 @@ export const MessageProvider = ({ children }) => {
             [roomId]: [...(messages[roomId] || []), newMessage],
           }
         })
-        updateConversations()
+        message.author === "User" && updateConversations()
       },
     }),
     [roomId, updateConversations],
@@ -96,11 +96,11 @@ export const MessageProvider = ({ children }) => {
       if (lastMessage.author === "User") {
         timer = setTimeout(() => {
           actions.sendMessage({ message: "Hello from bot!", author: "bot" })
-        }, 500)
+        }, 1000)
       }
       return () => clearTimeout(timer)
     }
-  }, [messages, state, actions, roomId])
+  }, [messages, state, roomId, actions])
 
   return children([state, actions])
 }

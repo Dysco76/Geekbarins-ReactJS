@@ -73,7 +73,7 @@ export const MessageList = ({
     if (messageList.current) {
       messageList.current.scrollTo(0, messageList.current.scrollHeight)
     }
-  }, [messages])
+  }, [messageList])
 
   useEffect(() => {
     handleScrollBottom()
