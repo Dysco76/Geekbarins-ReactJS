@@ -6,8 +6,8 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
-import { useState, useEffect, useRef } from "react"
-import { Message } from "../message"
+import { useRef, useCallback, useEffect } from "react"
+import { Message } from "../"
 
 const useStyles = makeStyles({
   wrapper: {
@@ -45,70 +45,63 @@ const useStyles = makeStyles({
   },
 })
 
-export const MessageList = () => {
+export const MessageList = ({
+  messages,
+  currentInput,
+  handleInput,
+  sendMessage,
+}) => {
   const classes = useStyles()
 
-  const [messageList, setMessageList] = useState([])
-  const [value, setValue] = useState("")
-  const inputEl = useRef(null)
-
-  const sendMessage = () => {
-    if (value) {
-      setMessageList((messages) => [
-        ...messages,
-        { value, author: "User", id: Date.now() },
-      ])
-
-      setValue("")
-    }
-  }
+  const messageList = useRef(null)
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
-      sendMessage()
+      handleSendMessage()
     }
   }
 
-  useEffect(() => {
-    if (
-      messageList.length &&
-      messageList[messageList.length - 1].author !== "bot"
-    ) {
-      setTimeout(() => {
-        setMessageList((messages) => [
-          ...messages,
-          { value: "Hello from bot!", author: "bot", id: Date.now() },
-        ])
-      }, 1500)
-    }
+  const handleSendMessage = () => {
+    if (currentInput)
+      sendMessage({
+        message: currentInput,
+        author: "User",
+      })
+  }
 
-    inputEl.current.focus()
+  const handleScrollBottom = useCallback(() => {
+    if (messageList.current) {
+      messageList.current.scrollTo(0, messageList.current.scrollHeight)
+    }
   }, [messageList])
+
+  useEffect(() => {
+    handleScrollBottom()
+  }, [handleScrollBottom])
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.messageList}>
-        {messageList.map((message) => (
+      <div ref={messageList} className={classes.messageList}>
+        {messages.map((message) => (
           <Message message={message} key={message.id} />
         ))}
       </div>
 
       <Paper elevation={3} className={classes.messageForm}>
         <TextField
-          inputRef={inputEl}
           type="text"
           className={classes.messageInput}
           fullWidth={true}
-          placeholder="Your Message"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          placeholder="Write your message..."
+          value={currentInput}
+          onChange={(e) => handleInput(e)}
           onKeyPress={handlePressInput}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <Icon
                   className={classes.sendButton}
-                  onClick={sendMessage}
+                  onClick={handleSendMessage}
                   color="primary"
                 >
                   <Send />

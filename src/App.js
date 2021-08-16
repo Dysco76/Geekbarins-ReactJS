@@ -1,7 +1,7 @@
 import "normalize.css"
-import { Grid, makeStyles } from "@material-ui/core"
-import { ChatList } from "./components/chat-list"
-import { MessageList } from "./components/message-list"
+import { makeStyles } from "@material-ui/core"
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
+import { Chat } from "./pages"
 
 const useStyles = makeStyles({
   app: {
@@ -13,14 +13,19 @@ export function App() {
   const classes = useStyles()
   return (
     <div className={classes.app}>
-      <Grid container={true}>
-        <Grid item={true} xs={12} md={3}>
-          <ChatList />
-        </Grid>
-        <Grid item={true} xs={12} md={9}>
-          <MessageList />
-        </Grid>
-      </Grid>
+      <BrowserRouter>
+        <Switch>
+          <Route exact={true} path="/">
+            <Redirect to="/chat" />
+          </Route>
+          <Route path="/chat">
+            <Chat />
+          </Route>
+          <Route path="*">
+            <h1>404</h1>
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </div>
   )
 }

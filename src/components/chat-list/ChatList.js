@@ -7,7 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Group } from "@material-ui/icons"
-import { useState } from "react"
+import { Link, useParams } from "react-router-dom"
 
 const useStyles = makeStyles({
   wrapper: {
@@ -15,29 +15,56 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     border: "1px solid #BDBDBD",
   },
+  chatBlock: {
+    textDecoration: "none",
+  },
+
+  chatTitle: {
+    color: "#000",
+  },
 })
 
-export const ChatList = () => {
+export const ChatList = ({ conversations, allMessages }) => {
   const classes = useStyles()
-
-  const [chatList, setChatList] = useState([
-    { id: "1", name: "Work" },
-    { id: "2", name: "Friends" },
-    { id: "3", name: "Family" },
-  ])
+  const { roomId } = useParams()
 
   return (
     <List component="nav" className={classes.wrapper}>
-      {chatList.map((chat) => {
+      {conversations.map((chat) => {
+        const { author, message, date } =
+          allMessages[chat.id][allMessages[chat.id].length - 1]
+
+        const messageText =
+          (author + message).length > 30
+            ? message.slice(0, 30 - author.length) + "..."
+            : message
+
         return (
-          <ListItem key={chat.id} button={true}>
-            <ListItemAvatar>
-              <Avatar>
-                <Group />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={chat.name} />
-          </ListItem>
+          <Link
+            key={chat.id}
+            to={`/chat/${chat.id}`}
+            className={classes.chatBlock}
+          >
+            <ListItem button={true} selected={roomId === chat.id}>
+              <ListItemAvatar>
+                <Avatar>
+                  <Group />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <span className={classes.chatTitle}>{chat.title}</span>
+                }
+                secondary={
+                  <>
+                    {`${author}: ${messageText}`}
+                    <br />
+                    <sub>{date}</sub>
+                  </>
+                }
+              />
+            </ListItem>
+          </Link>
         )
       })}
     </List>

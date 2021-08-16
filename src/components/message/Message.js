@@ -1,4 +1,5 @@
 import { Paper, makeStyles } from "@material-ui/core"
+import { formatDate } from "../../utils"
 
 const useStyles = makeStyles({
   message: {
@@ -47,6 +48,8 @@ const useStyles = makeStyles({
   },
 
   messageContent: {
+    display: "flex",
+    flexDirection: "column",
     fontSize: "20px",
   },
 
@@ -55,20 +58,28 @@ const useStyles = makeStyles({
     margin: 0,
   },
 
-  sb1: {},
+  messageDate: {
+    margin: "0px",
+    alignSelf: "flex-end",
+  },
 })
 
-export function Message({ message: { value, author } }) {
+export function Message({
+  message: { message, author, date = formatDate(new Date()) },
+}) {
   const classes = useStyles()
   return (
     <Paper
       className={`${classes.message} ${classes.sb1} ${
-        author === "bot" ? classes.messageIncoming : ""
+        author !== "User" ? classes.messageIncoming : ""
       }`}
       elevation={3}
     >
       <div className={classes.messageContent}>
-        <p className={classes.author}>{author}:</p> {value}
+        <p className={classes.author}>{author}:</p> <span>{message}</span>
+        <p className={classes.messageDate}>
+          <sub>{date}</sub>
+        </p>
       </div>
     </Paper>
   )
