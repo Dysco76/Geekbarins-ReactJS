@@ -8,12 +8,15 @@ import {
 } from "@material-ui/core"
 import { Group } from "@material-ui/icons"
 import { Link, useParams } from "react-router-dom"
+import { ProfileDialog } from ".."
 
 const useStyles = makeStyles({
   wrapper: {
     height: "100vh",
     boxSizing: "border-box",
     border: "1px solid #BDBDBD",
+    position: "relative",
+    padding: "20px 0",
   },
   chatBlock: {
     textDecoration: "none",
@@ -29,8 +32,9 @@ export const ChatList = ({ conversations, allMessages }) => {
   const { roomId } = useParams()
 
   return (
-    <>
-      <List component="nav" className={classes.wrapper}>
+    <div className={classes.wrapper}>
+      <ProfileDialog />
+      <List component="nav">
         {conversations.map((chat) => {
           const { author, message, date } =
             allMessages[chat.id][allMessages[chat.id].length - 1]
@@ -69,6 +73,6 @@ export const ChatList = ({ conversations, allMessages }) => {
           )
         })}
       </List>
-    </>
+    </div>
   )
 }

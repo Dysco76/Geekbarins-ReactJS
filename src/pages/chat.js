@@ -4,7 +4,7 @@ import {
   ChatList,
   MessageList,
   MessageProvider,
-  ProfileDialog,
+  // ProfileDialog,
 } from "../components"
 
 export const Chat = () => {
@@ -15,7 +15,6 @@ export const Chat = () => {
           {([state, actions]) => (
             <Grid container={true}>
               <Grid item={true} xs={12} md={3}>
-                <ProfileDialog />
                 <ChatList {...state} />
               </Grid>
               <Grid item={true} xs={12} md={9}>
