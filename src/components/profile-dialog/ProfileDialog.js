@@ -7,12 +7,15 @@ import {
   ListItem,
   ListItemText,
   Avatar,
+  Modal,
+  Backdrop,
+  Fade,
   makeStyles,
 } from "@material-ui/core"
 import { Close, AccountCircle } from "@material-ui/icons"
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { useSelector } from "react-redux"
-// import { updateProfileInfo } from "../../store/profile"
+import { EditProfileForm } from "../"
 
 const useStyles = makeStyles({
   paper: {
@@ -54,15 +57,24 @@ export const ProfileDialog = () => {
 
   const { age, name, phone } = useSelector((state) => state.user)
 
-  const [open, setOpen] = useState(false)
+  const [openProfile, setOpenProfile] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
 
-  const handleClickOpen = () => {
-    setOpen(true)
+  const handleProfileOpen = () => {
+    setOpenProfile(true)
   }
 
-  const handleClose = () => {
-    setOpen(false)
+  const handleProfileClose = () => {
+    setOpenProfile(false)
   }
+
+  const handleEditOpen = () => {
+    setOpenEdit(true)
+  }
+
+  const handleEditClose = useCallback(() => {
+    setOpenEdit(false)
+  }, [setOpenEdit])
 
   return (
     <div className={classes.wrapper}>
@@ -70,12 +82,12 @@ export const ProfileDialog = () => {
         color="primary"
         startIcon={<AccountCircle />}
         className={classes.openButton}
-        onClick={handleClickOpen}
+        onClick={handleProfileOpen}
       >
         Profile
       </Button>
       <Drawer
-        open={open}
+        open={openProfile}
         anchor="left"
         variant="persistent"
         classes={{
@@ -86,7 +98,7 @@ export const ProfileDialog = () => {
         <Paper className={classes.paper}>
           <IconButton
             data-action="close-profile"
-            onClick={handleClose}
+            onClick={handleProfileClose}
             className={classes.closeButton}
           >
             <Close />
@@ -106,10 +118,26 @@ export const ProfileDialog = () => {
                 <ListItemText>Age: {age}</ListItemText>
               </ListItem>
             </List>
-            <Button variant="outlined">Edit Profile</Button>
+            <Button variant="outlined" onClick={handleEditOpen}>
+              Edit Profile
+            </Button>
           </Paper>
         </Paper>
       </Drawer>
+
+      <Modal
+        open={openEdit}
+        onClose={handleEditClose}
+        closeAfterTransition={true}
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openEdit}>
+          <EditProfileForm triggerCloseForm={handleEditClose} />
+        </Fade>
+      </Modal>
     </div>
   )
 }
