@@ -7,8 +7,15 @@ import {
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
 import { useRef, useCallback, useEffect } from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { useParams } from "react-router"
 import { Message } from "../"
+import {
+  handleChangeMessageValue,
+  getCurrentInput,
+} from "../../store/conversations-list"
+import { addMessage, getMessagesById } from "../../store/message-list"
+import { getUserName } from "../../store/profile"
 
 const useStyles = makeStyles({
   wrapper: {
@@ -46,17 +53,17 @@ const useStyles = makeStyles({
   },
 })
 
-export const MessageList = ({
-  messages,
-  currentInput,
-  handleInput,
-  sendMessage,
-}) => {
+export const MessageList = () => {
+  const { roomId } = useParams()
   const classes = useStyles()
 
   const messageList = useRef(null)
 
-  const userName = useSelector((state) => state.user.name)
+  const dispatch = useDispatch()
+
+  const userName = useSelector(getUserName)
+  const messages = useSelector(getMessagesById(roomId))
+  const currentInput = useSelector(getCurrentInput(roomId))
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
@@ -66,10 +73,15 @@ export const MessageList = ({
 
   const handleSendMessage = () => {
     if (currentInput)
-      sendMessage({
-        message: currentInput,
-        author: userName,
-      })
+      dispatch(
+        addMessage(
+          {
+            message: currentInput,
+            author: userName,
+          },
+          roomId,
+        ),
+      )
   }
 
   const handleScrollBottom = useCallback(() => {
@@ -97,7 +109,9 @@ export const MessageList = ({
           fullWidth={true}
           placeholder="Write your message..."
           value={currentInput}
-          onChange={(e) => handleInput(e)}
+          onChange={(e) =>
+            dispatch(handleChangeMessageValue(e.target.value, roomId))
+          }
           onKeyPress={handlePressInput}
           InputProps={{
             endAdornment: (
