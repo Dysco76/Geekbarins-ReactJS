@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
 import { useRef, useCallback, useEffect } from "react"
+import { useSelector } from "react-redux"
 import { Message } from "../"
 
 const useStyles = makeStyles({
@@ -55,6 +56,8 @@ export const MessageList = ({
 
   const messageList = useRef(null)
 
+  const userName = useSelector((state) => state.user.name)
+
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
       handleSendMessage()
@@ -65,7 +68,7 @@ export const MessageList = ({
     if (currentInput)
       sendMessage({
         message: currentInput,
-        author: "User",
+        author: userName,
       })
   }
 

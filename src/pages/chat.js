@@ -1,6 +1,11 @@
 import { Grid } from "@material-ui/core"
 import { Switch, Route, Redirect } from "react-router-dom"
-import { ChatList, MessageList, MessageProvider } from "../components"
+import {
+  ChatList,
+  MessageList,
+  MessageProvider,
+  // ProfileDialog,
+} from "../components"
 
 export const Chat = () => {
   return (
