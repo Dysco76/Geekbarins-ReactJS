@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   },
 })
 
-export const EditProfileForm = ({ triggerCloseForm }) => {
+export const EditProfileForm = ({ handleEditClose }) => {
   const classes = useStyles()
 
   const dispatch = useDispatch()
@@ -43,7 +43,7 @@ export const EditProfileForm = ({ triggerCloseForm }) => {
 
   const handleProfileSave = () => {
     dispatch(updateProfileInfo(userInfo))
-    triggerCloseForm()
+    handleEditClose()
   }
 
   return (
