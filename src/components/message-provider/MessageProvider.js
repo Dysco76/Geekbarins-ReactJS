@@ -1,10 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react"
+import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import { formatDate } from "../../utils"
 // dummy comment for PR
 
 export const MessageProvider = ({ children }) => {
   const { roomId } = useParams()
+  const userName = useSelector((state) => state.user.name)
 
   const [conversations, setConversations] = useState([
     { title: "Room 1", id: "room1", currentInput: "" },
@@ -83,10 +85,10 @@ export const MessageProvider = ({ children }) => {
             [roomId]: [...(messages[roomId] || []), newMessage],
           }
         })
-        message.author === "User" && updateConversations()
+        message.author === userName && updateConversations()
       },
     }),
-    [roomId, updateConversations],
+    [roomId, updateConversations, userName],
   )
 
   useEffect(() => {
@@ -94,14 +96,14 @@ export const MessageProvider = ({ children }) => {
     if (state.chatExists) {
       const lastMessage = messages[roomId][messages[roomId].length - 1]
 
-      if (lastMessage.author === "User") {
+      if (lastMessage.author === userName) {
         timer = setTimeout(() => {
           actions.sendMessage({ message: "Hello from bot!", author: "bot" })
         }, 1000)
       }
       return () => clearTimeout(timer)
     }
-  }, [messages, state, roomId, actions])
+  }, [messages, state, roomId, actions, userName])
 
   return children([state, actions])
 }
