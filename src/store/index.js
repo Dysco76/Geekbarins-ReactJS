@@ -9,4 +9,5 @@ export const store = createStore(
     messageList: messagesReducer,
     conversations: conversationsReducer,
   }),
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 )
