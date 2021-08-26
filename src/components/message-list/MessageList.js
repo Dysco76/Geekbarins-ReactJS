@@ -12,6 +12,7 @@ import { useParams } from "react-router"
 import { Message } from "../"
 import {
   handleChangeMessageValue,
+  clearMessageInput,
   getCurrentInput,
 } from "../../store/conversations-list"
 import { addMessage, getMessagesById } from "../../store/message-list"
@@ -82,6 +83,7 @@ export const MessageList = () => {
           roomId,
         ),
       )
+    dispatch(clearMessageInput(roomId))
   }
 
   const handleScrollBottom = useCallback(() => {
