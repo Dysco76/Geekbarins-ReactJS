@@ -7,8 +7,11 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Group } from "@material-ui/icons"
+import { useSelector } from "react-redux"
 import { Link, useParams } from "react-router-dom"
 import { ProfileDialog } from ".."
+import { getConversations } from "../../store/conversations-list"
+import { getAllMessages } from "../../store/message-list"
 
 const useStyles = makeStyles({
   wrapper: {
@@ -27,9 +30,11 @@ const useStyles = makeStyles({
   },
 })
 
-export const ChatList = ({ conversations, allMessages }) => {
+export const ChatList = () => {
   const classes = useStyles()
   const { roomId } = useParams()
+  const conversations = useSelector(getConversations)
+  const allMessages = useSelector(getAllMessages)
 
   return (
     <div className={classes.wrapper}>

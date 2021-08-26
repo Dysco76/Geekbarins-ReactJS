@@ -1,5 +1,6 @@
 import { Paper, makeStyles } from "@material-ui/core"
 import { useSelector } from "react-redux"
+import { getUserName } from "../../store/profile"
 import { formatDate } from "../../utils"
 
 const useStyles = makeStyles({
@@ -69,7 +70,7 @@ export function Message({
   message: { message, author, date = formatDate(new Date()) },
 }) {
   const classes = useStyles()
-  const userName = useSelector((state) => state.user.name)
+  const userName = useSelector(getUserName)
   return (
     <Paper
       className={`${classes.message} ${classes.sb1} ${

@@ -18,7 +18,7 @@ export function App() {
           <Route exact={true} path="/">
             <Redirect to="/chat" />
           </Route>
-          <Route path="/chat">
+          <Route path={["/chat/:roomId", "/chat"]}>
             <Chat />
           </Route>
           <Route path="*">
