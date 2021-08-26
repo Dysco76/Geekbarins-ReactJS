@@ -1,10 +1,5 @@
 import { clearMessageInput } from "../conversations-list"
-import { ADD_MESSAGE } from "./types"
-
-export const addMessage = (message, roomId) => ({
-  type: ADD_MESSAGE,
-  payload: { message, roomId },
-})
+import { addMessage } from "./"
 
 export const sendMessageThunk = (message, roomId) => (dispatch, getState) => {
   dispatch(addMessage(message, roomId))

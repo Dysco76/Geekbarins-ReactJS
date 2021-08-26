@@ -12,10 +12,9 @@ import { useParams } from "react-router"
 import { Message } from "../"
 import {
   handleChangeMessageValue,
-  clearMessageInput,
   getCurrentInput,
 } from "../../store/conversations-list"
-import { addMessage, getMessagesById } from "../../store/message-list"
+import { sendMessageThunk, getMessagesById } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 
 const useStyles = makeStyles({
@@ -75,7 +74,7 @@ export const MessageList = () => {
   const handleSendMessage = () => {
     if (currentInput)
       dispatch(
-        addMessage(
+        sendMessageThunk(
           {
             message: currentInput,
             author: userName,
@@ -83,7 +82,6 @@ export const MessageList = () => {
           roomId,
         ),
       )
-    dispatch(clearMessageInput(roomId))
   }
 
   const handleScrollBottom = useCallback(() => {
