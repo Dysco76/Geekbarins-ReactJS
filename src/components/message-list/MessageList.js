@@ -14,7 +14,7 @@ import {
   handleChangeMessageValue,
   getCurrentInput,
 } from "../../store/conversations-list"
-import { addMessage, getMessagesById } from "../../store/message-list"
+import { sendMessageThunk, getMessagesById } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 
 const useStyles = makeStyles({
@@ -74,7 +74,7 @@ export const MessageList = () => {
   const handleSendMessage = () => {
     if (currentInput)
       dispatch(
-        addMessage(
+        sendMessageThunk(
           {
             message: currentInput,
             author: userName,
