@@ -1,7 +1,7 @@
 import "normalize.css"
 import { makeStyles } from "@material-ui/core"
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
-import { Chat } from "./pages"
+import { Chat, Gists } from "./pages"
 
 const useStyles = makeStyles({
   app: {
@@ -20,6 +20,9 @@ export function App() {
           </Route>
           <Route path={["/chat/:roomId", "/chat"]}>
             <Chat />
+          </Route>
+          <Route path="/gists">
+            <Gists />
           </Route>
           <Route path="*">
             <h1>404</h1>

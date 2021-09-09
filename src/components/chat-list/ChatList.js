@@ -41,8 +41,11 @@ export const ChatList = () => {
       <ProfileDialog />
       <List component="nav">
         {conversations.map((chat) => {
-          const { author, message, date } =
-            allMessages[chat.id][allMessages[chat.id].length - 1]
+          const {
+            author = "",
+            message = "",
+            date = "",
+          } = allMessages[chat.id][allMessages[chat.id]?.length - 1] || {}
 
           const messageText =
             (author + message).length > 30
@@ -67,7 +70,7 @@ export const ChatList = () => {
                   }
                   secondary={
                     <>
-                      {`${author}: ${messageText}`}
+                      {author ? `${author}: ${messageText}` : null}
                       <br />
                       <sub>{date}</sub>
                     </>

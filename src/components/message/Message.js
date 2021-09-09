@@ -1,5 +1,8 @@
 import { Paper, makeStyles } from "@material-ui/core"
-import { useSelector } from "react-redux"
+import { useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { ContextMenu } from ".."
+import { removeMessageThunk } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 import { formatDate } from "../../utils"
 
@@ -67,10 +70,23 @@ const useStyles = makeStyles({
 })
 
 export function Message({
-  message: { message, author, date = formatDate(new Date()) },
+  message: { message, author, date = formatDate(new Date()), id },
+  roomId,
 }) {
   const classes = useStyles()
   const userName = useSelector(getUserName)
+  const dispatch = useDispatch()
+
+  const [contextActions] = useState([
+    { name: "Edit message" },
+    {
+      name: "Delete message",
+      func() {
+        dispatch(removeMessageThunk(id, roomId))
+      },
+    },
+  ])
+
   return (
     <Paper
       className={`${classes.message} ${classes.sb1} ${
@@ -84,6 +100,7 @@ export function Message({
           <sub>{date}</sub>
         </p>
       </div>
+      <ContextMenu actions={contextActions} />
     </Paper>
   )
 }

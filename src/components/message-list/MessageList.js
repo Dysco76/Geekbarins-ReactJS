@@ -98,7 +98,7 @@ export const MessageList = () => {
     <div className={classes.wrapper}>
       <div ref={messageList} className={classes.messageList}>
         {messages.map((message) => (
-          <Message message={message} key={message.id} />
+          <Message message={message} key={message.id} roomId={roomId} />
         ))}
       </div>
 

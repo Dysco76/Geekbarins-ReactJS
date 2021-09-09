@@ -1,5 +1,5 @@
 import { formatDate } from "../../utils"
-import { ADD_MESSAGE } from "./types"
+import { ADD_MESSAGE, DELETE_MESSAGE } from "./types"
 
 const initialState = {
   room1: [
@@ -37,6 +37,14 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
           ...state[payload.roomId],
           { ...payload.message, date: formatDate(new Date()), id: Date.now() },
         ],
+      }
+
+    case DELETE_MESSAGE:
+      return {
+        ...state,
+        [payload.roomId]: state[payload.roomId].filter(
+          (message) => message.id !== payload.messageId,
+        ),
       }
     default:
       return state
