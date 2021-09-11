@@ -2,6 +2,10 @@ import { Paper, makeStyles } from "@material-ui/core"
 import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { ContextMenu } from ".."
+import {
+  handleChangeMessageValue,
+  setMessageId,
+} from "../../store/conversations-list"
 import { removeMessageThunk } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 import { formatDate } from "../../utils"
@@ -67,6 +71,12 @@ const useStyles = makeStyles({
     margin: "0px",
     alignSelf: "flex-end",
   },
+
+  contextMenu: {
+    position: "absolute",
+    top: "0",
+    right: "0",
+  },
 })
 
 export function Message({
@@ -78,7 +88,14 @@ export function Message({
   const dispatch = useDispatch()
 
   const [contextActions] = useState([
-    { name: "Edit message" },
+    author === userName && {
+      name: "Edit message",
+      func() {
+        dispatch(handleChangeMessageValue(message, roomId))
+        dispatch(setMessageId(id, roomId))
+      },
+      shouldContextClose: true,
+    },
     {
       name: "Delete message",
       func() {
@@ -100,7 +117,7 @@ export function Message({
           <sub>{date}</sub>
         </p>
       </div>
-      <ContextMenu actions={contextActions} />
+      <ContextMenu actions={contextActions} className={classes.contextMenu} />
     </Paper>
   )
 }

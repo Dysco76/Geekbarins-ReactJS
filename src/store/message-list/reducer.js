@@ -1,5 +1,5 @@
 import { formatDate } from "../../utils"
-import { ADD_MESSAGE, DELETE_MESSAGE } from "./types"
+import { ADD_MESSAGE, DELETE_MESSAGE, EDIT_MESSAGE } from "./types"
 
 const initialState = {
   room1: [
@@ -30,7 +30,7 @@ const initialState = {
 
 export const messagesReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case ADD_MESSAGE:
+    case ADD_MESSAGE: {
       return {
         ...state,
         [payload.roomId]: [
@@ -38,15 +38,31 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
           { ...payload.message, date: formatDate(new Date()), id: Date.now() },
         ],
       }
+    }
 
-    case DELETE_MESSAGE:
+    case DELETE_MESSAGE: {
       return {
         ...state,
         [payload.roomId]: state[payload.roomId].filter(
           (message) => message.id !== payload.messageId,
         ),
       }
-    default:
+    }
+
+    case EDIT_MESSAGE: {
+      const currentChat = state[payload.roomId]
+
+      return {
+        ...state,
+        [payload.roomId]: currentChat.map((message) =>
+          message.id === payload.message.id
+            ? { ...message, message: payload.message.message }
+            : message,
+        ),
+      }
+    }
+    default: {
       return state
+    }
   }
 }

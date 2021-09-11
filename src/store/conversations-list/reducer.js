@@ -1,9 +1,13 @@
-import { HANDLE_CHANGE_MESSAGE_VALUE, CLEAR_MESSAGE_INPUT } from "./types"
+import {
+  HANDLE_CHANGE_MESSAGE_VALUE,
+  CLEAR_MESSAGE_INPUT,
+  SET_MESSAGE_ID,
+} from "./types"
 
 const initialState = [
-  { title: "Room 1", id: "room1", currentInput: "" },
-  { title: "Room 2", id: "room2", currentInput: "" },
-  { title: "Room 3", id: "room3", currentInput: "" },
+  { title: "Room 1", id: "room1", currentInput: "", messageId: null },
+  { title: "Room 2", id: "room2", currentInput: "", messageId: null },
+  { title: "Room 3", id: "room3", currentInput: "", messageId: null },
 ]
 
 const setInputValue = (state, payload) =>
@@ -23,6 +27,13 @@ export const conversationsReducer = (
 
     case CLEAR_MESSAGE_INPUT:
       return setInputValue(state, payload)
+
+    case SET_MESSAGE_ID:
+      return state.map((chat) =>
+        chat.id === payload.roomId
+          ? { ...chat, messageId: payload?.messageId || null }
+          : chat,
+      )
 
     default:
       return state
