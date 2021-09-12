@@ -136,7 +136,9 @@ export const ProfileDialog = () => {
         }}
       >
         <Fade in={openEdit}>
-          <EditProfileForm handleEditClose={handleEditClose} />
+          <>
+            <EditProfileForm handleEditClose={handleEditClose} />
+          </>
         </Fade>
       </Modal>
     </div>

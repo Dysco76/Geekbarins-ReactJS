@@ -2,6 +2,7 @@ import {
   HANDLE_CHANGE_MESSAGE_VALUE,
   CLEAR_MESSAGE_INPUT,
   SET_MESSAGE_ID,
+  ADD_NEW_CHAT,
 } from "./types"
 
 const initialState = [
@@ -34,6 +35,17 @@ export const conversationsReducer = (
           ? { ...chat, messageId: payload?.messageId || null }
           : chat,
       )
+
+    case ADD_NEW_CHAT:
+      return [
+        ...state,
+        {
+          title: payload.name,
+          id: payload.id,
+          currentInput: "",
+          messageId: null,
+        },
+      ]
 
     default:
       return state

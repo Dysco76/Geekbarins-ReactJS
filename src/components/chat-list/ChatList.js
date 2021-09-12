@@ -9,7 +9,7 @@ import {
 import { Group } from "@material-ui/icons"
 import { useSelector } from "react-redux"
 import { Link, useParams } from "react-router-dom"
-import { ProfileDialog } from ".."
+import { ProfileDialog, AddChatModal } from ".."
 import { getConversations } from "../../store/conversations-list"
 import { getAllMessages } from "../../store/message-list"
 
@@ -19,7 +19,9 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     border: "1px solid #BDBDBD",
     position: "relative",
-    padding: "20px 0",
+    padding: "20px 0 5px 0",
+    display: "flex",
+    flexDirection: "column",
   },
   chatBlock: {
     textDecoration: "none",
@@ -27,6 +29,11 @@ const useStyles = makeStyles({
 
   chatTitle: {
     color: "#000",
+  },
+
+  addButtonWrapper: {
+    padding: "0 5px",
+    marginTop: "auto",
   },
 })
 
@@ -81,6 +88,10 @@ export const ChatList = () => {
           )
         })}
       </List>
+
+      <div className={classes.addButtonWrapper}>
+        <AddChatModal />
+      </div>
     </div>
   )
 }

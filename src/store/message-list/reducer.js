@@ -1,5 +1,10 @@
 import { formatDate } from "../../utils"
-import { ADD_MESSAGE, DELETE_MESSAGE, EDIT_MESSAGE } from "./types"
+import {
+  ADD_MESSAGE,
+  DELETE_MESSAGE,
+  EDIT_MESSAGE,
+  ADD_MESSAGE_ROOM,
+} from "./types"
 
 const initialState = {
   room1: [
@@ -61,6 +66,14 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         ),
       }
     }
+
+    case ADD_MESSAGE_ROOM: {
+      return {
+        ...state,
+        [payload.newRoomId]: [],
+      }
+    }
+
     default: {
       return state
     }
