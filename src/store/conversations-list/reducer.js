@@ -3,6 +3,7 @@ import {
   CLEAR_MESSAGE_INPUT,
   SET_MESSAGE_ID,
   ADD_NEW_CHAT,
+  DELETE_CHAT,
 } from "./types"
 
 const initialState = [
@@ -46,6 +47,9 @@ export const conversationsReducer = (
           messageId: null,
         },
       ]
+
+    case DELETE_CHAT:
+      return state.filter((chat) => chat.id !== payload.id)
 
     default:
       return state

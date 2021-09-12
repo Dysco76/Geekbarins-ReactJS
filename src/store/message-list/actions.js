@@ -3,6 +3,7 @@ import {
   DELETE_MESSAGE,
   EDIT_MESSAGE,
   ADD_MESSAGE_ROOM,
+  DELETE_MESSAGE_ROOM,
 } from "./types"
 
 export const addMessage = (message, roomId) => ({
@@ -22,4 +23,8 @@ export const editMessage = (message, roomId) => ({
 export const addMessageRoom = (chatId) => ({
   type: ADD_MESSAGE_ROOM,
   payload: { newRoomId: chatId },
+})
+export const deleteMessageRoom = (chatId) => ({
+  type: DELETE_MESSAGE_ROOM,
+  payload: { id: chatId },
 })

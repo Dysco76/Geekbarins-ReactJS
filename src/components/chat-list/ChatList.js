@@ -6,11 +6,15 @@ import {
   Avatar,
   makeStyles,
 } from "@material-ui/core"
-import { Group } from "@material-ui/icons"
-import { useSelector } from "react-redux"
-import { Link, useParams } from "react-router-dom"
-import { ProfileDialog, AddChatModal } from ".."
-import { getConversations } from "../../store/conversations-list"
+import { Group, Close } from "@material-ui/icons"
+import { useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { Link, useParams, useHistory } from "react-router-dom"
+import { ProfileDialog, AddChatModal, ContextMenu } from ".."
+import {
+  getConversations,
+  deleteChatThunk,
+} from "../../store/conversations-list"
 import { getAllMessages } from "../../store/message-list"
 
 const useStyles = makeStyles({
@@ -35,13 +39,43 @@ const useStyles = makeStyles({
     padding: "0 5px",
     marginTop: "auto",
   },
+
+  chatWrapper: {
+    position: "relative",
+  },
+
+  contextMenu: {
+    position: "absolute",
+    top: "0",
+    right: "0",
+  },
 })
 
 export const ChatList = () => {
   const classes = useStyles()
   const { roomId } = useParams()
+  const history = useHistory()
   const conversations = useSelector(getConversations)
   const allMessages = useSelector(getAllMessages)
+  const dispatch = useDispatch()
+
+  const [contextActions] = useState([
+    {
+      name: "Delete room",
+      func() {
+        dispatch(deleteChatThunk(this.chatId))
+        return history.push("/chat")
+      },
+      chatId: null,
+    },
+    {
+      name: "Cancel",
+      func() {
+        return false
+      },
+      shouldContextClose: true,
+    },
+  ])
 
   return (
     <div className={classes.wrapper}>
@@ -60,31 +94,39 @@ export const ChatList = () => {
               : message
 
           return (
-            <Link
-              key={chat.id}
-              to={`/chat/${chat.id}`}
-              className={classes.chatBlock}
-            >
-              <ListItem button={true} selected={roomId === chat.id}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <Group />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <span className={classes.chatTitle}>{chat.title}</span>
-                  }
-                  secondary={
-                    <>
-                      {author ? `${author}: ${messageText}` : null}
-                      <br />
-                      <sub>{date}</sub>
-                    </>
-                  }
-                />
-              </ListItem>
-            </Link>
+            <div className={classes.chatWrapper} key={chat.id}>
+              <Link to={`/chat/${chat.id}`} className={classes.chatBlock}>
+                <ListItem button={true} selected={roomId === chat.id}>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Group />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <span className={classes.chatTitle}>{chat.title}</span>
+                    }
+                    secondary={
+                      <>
+                        {author ? `${author}: ${messageText}` : null}
+                        <br />
+                        <sub>{date}</sub>
+                      </>
+                    }
+                  />
+                </ListItem>
+              </Link>
+              <ContextMenu
+                className={classes.contextMenu}
+                actions={contextActions.map((action) =>
+                  action.name === "Delete room"
+                    ? { ...action, chatId: chat.id }
+                    : action,
+                )}
+              >
+                <Close fontSize="small" />
+              </ContextMenu>
+            </div>
           )
         })}
       </List>

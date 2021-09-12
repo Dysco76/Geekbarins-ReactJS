@@ -4,6 +4,7 @@ import {
   DELETE_MESSAGE,
   EDIT_MESSAGE,
   ADD_MESSAGE_ROOM,
+  DELETE_MESSAGE_ROOM,
 } from "./types"
 
 const initialState = {
@@ -72,6 +73,11 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         ...state,
         [payload.newRoomId]: [],
       }
+    }
+
+    case DELETE_MESSAGE_ROOM: {
+      const { [payload.id]: removedRoom, ...newState } = state
+      return newState
     }
 
     default: {
