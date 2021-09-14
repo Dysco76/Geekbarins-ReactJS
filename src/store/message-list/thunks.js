@@ -1,7 +1,9 @@
 import { clearMessageInput } from "../conversations-list"
-import { addMessage } from "./"
+import { addMessage, deleteMessage, editMessage } from "./"
 
 export const sendMessageThunk = (message, roomId) => (dispatch, getState) => {
+  //will send request to server
+
   dispatch(addMessage(message, roomId))
   dispatch(clearMessageInput(roomId))
 
@@ -14,4 +16,16 @@ export const sendMessageThunk = (message, roomId) => (dispatch, getState) => {
       500,
     )
   }
+}
+
+export const removeMessageThunk = (messageId, roomId) => (dispatch) => {
+  //will send request to server
+
+  dispatch(deleteMessage(messageId, roomId))
+}
+export const editMessageThunk = (message, roomId) => (dispatch) => {
+  //will send request to server
+
+  dispatch(editMessage(message, roomId))
+  dispatch(clearMessageInput(roomId))
 }

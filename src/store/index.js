@@ -3,8 +3,9 @@ import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 import thunk from "redux-thunk"
 import { conversationsReducer } from "./conversations-list"
+import { gistsReducer } from "./gists"
 import { messagesReducer } from "./message-list"
-import { logger } from "./middlewares"
+// import { logger } from "./middlewares"
 import { profileReducer } from "./profile"
 
 const persistConfig = {
@@ -19,13 +20,14 @@ const persistedReducer = persistReducer(
     profile: profileReducer,
     messageList: messagesReducer,
     conversations: conversationsReducer,
+    gists: gistsReducer,
   }),
 )
 
 export const store = createStore(
   persistedReducer,
   compose(
-    applyMiddleware(thunk, logger),
+    applyMiddleware(thunk),
     window.__REDUX_DEVTOOLS_EXTENSION__
       ? window.__REDUX_DEVTOOLS_EXTENSION__()
       : (args) => args,

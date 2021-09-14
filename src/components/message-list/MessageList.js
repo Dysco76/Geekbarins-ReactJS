@@ -13,8 +13,13 @@ import { Message } from "../"
 import {
   handleChangeMessageValue,
   getCurrentInput,
+  getExistingMessageId,
 } from "../../store/conversations-list"
-import { sendMessageThunk, getMessagesById } from "../../store/message-list"
+import {
+  sendMessageThunk,
+  getMessagesById,
+  editMessageThunk,
+} from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 
 const useStyles = makeStyles({
@@ -64,6 +69,7 @@ export const MessageList = () => {
   const userName = useSelector(getUserName)
   const messages = useSelector(getMessagesById(roomId))
   const currentInput = useSelector(getCurrentInput(roomId))
+  const existingMessageId = useSelector(getExistingMessageId(roomId))
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
@@ -72,7 +78,20 @@ export const MessageList = () => {
   }
 
   const handleSendMessage = () => {
-    if (currentInput)
+    if (!currentInput) return
+
+    if (existingMessageId) {
+      dispatch(
+        editMessageThunk(
+          {
+            message: currentInput,
+            author: userName,
+            id: existingMessageId,
+          },
+          roomId,
+        ),
+      )
+    } else {
       dispatch(
         sendMessageThunk(
           {
@@ -82,6 +101,7 @@ export const MessageList = () => {
           roomId,
         ),
       )
+    }
   }
 
   const handleScrollBottom = useCallback(() => {
@@ -98,7 +118,7 @@ export const MessageList = () => {
     <div className={classes.wrapper}>
       <div ref={messageList} className={classes.messageList}>
         {messages.map((message) => (
-          <Message message={message} key={message.id} />
+          <Message message={message} key={message.id} roomId={roomId} />
         ))}
       </div>
 

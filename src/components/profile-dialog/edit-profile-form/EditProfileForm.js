@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { updateProfileInfo } from "../../store/profile"
+import { updateProfileInfo } from "../../../store/profile"
 
 const useStyles = makeStyles({
   editProfileWrapper: {
