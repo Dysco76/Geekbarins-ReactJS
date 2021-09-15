@@ -22,42 +22,6 @@ import {
 } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 
-const useStyles = makeStyles({
-  wrapper: {
-    position: "relative",
-    height: "100vh",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    background: "rgb(92,207,104)",
-    backgroundImage:
-      "linear-gradient(25deg, rgba(92,207,104,1) 11%, rgba(0,212,255,1) 96%)",
-  },
-  messageList: {
-    paddingTop: "20px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    overflow: "auto",
-  },
-  messageForm: {
-    width: "100%",
-    position: "sticky",
-    bottom: "0",
-  },
-  messageInput: {
-    backgroundColor: "#fff",
-    padding: "10px",
-  },
-
-  sendButton: {
-    marginRight: "20px",
-    marginBottom: "10px",
-    cursor: "pointer",
-  },
-})
-
 export const MessageList = () => {
   const { roomId } = useParams()
   const classes = useStyles()
@@ -151,3 +115,39 @@ export const MessageList = () => {
     </div>
   )
 }
+
+const useStyles = makeStyles({
+  wrapper: {
+    position: "relative",
+    height: "100vh",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    background: "rgb(92,207,104)",
+    backgroundImage:
+      "linear-gradient(25deg, rgba(92,207,104,1) 11%, rgba(0,212,255,1) 96%)",
+  },
+  messageList: {
+    paddingTop: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    overflow: "auto",
+  },
+  messageForm: {
+    width: "100%",
+    position: "sticky",
+    bottom: "0",
+  },
+  messageInput: {
+    backgroundColor: "#fff",
+    padding: "10px",
+  },
+
+  sendButton: {
+    marginRight: "20px",
+    marginBottom: "10px",
+    cursor: "pointer",
+  },
+})

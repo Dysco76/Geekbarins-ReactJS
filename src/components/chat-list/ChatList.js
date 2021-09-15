@@ -64,7 +64,7 @@ export const ChatList = () => {
       name: "Delete room",
       func() {
         dispatch(deleteChatThunk(this.chatId))
-        return history.push("/chat")
+        roomId === this.chatId && history.push("/chat")
       },
       chatId: null,
     },

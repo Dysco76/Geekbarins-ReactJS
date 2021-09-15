@@ -1,0 +1,6 @@
+export const AUTH_START = "@authentication/start authentication"
+export const LOGIN_SUCCESS = "@authentication/successfull login"
+export const LOGOUT_SUCCESS = "@authentication/successfull logout"
+export const AUTH_ERROR = "@authentication/error during authentication"
+export const SIGN_UP_SUCCESS = "@authentication/successfull sign-up"
+export const SET_SESSION = "@authentication/set current session"
