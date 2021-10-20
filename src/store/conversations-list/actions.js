@@ -4,6 +4,10 @@ import {
   SET_MESSAGE_ID,
   ADD_NEW_CHAT,
   DELETE_CHAT,
+  GET_CONVERSATIONS_ERROR,
+  GET_CONVERSATIONS_SUCCESS,
+  GET_CONVERSATIONS_START,
+  SET_LAST_MESSAGE,
 } from "./types"
 
 export const handleChangeMessageValue = (value, roomId) => ({
@@ -27,4 +31,20 @@ export const addNewChat = (chatName, chatId) => ({
 export const deleteChat = (chatId) => ({
   type: DELETE_CHAT,
   payload: { id: chatId },
+})
+export const setLastMessage = (message, chatId) => ({
+  type: SET_LAST_MESSAGE,
+  payload: { message, id: chatId },
+})
+
+export const getConversationsStart = () => ({
+  type: GET_CONVERSATIONS_START,
+})
+export const getConversationsSuccess = (conversations) => ({
+  type: GET_CONVERSATIONS_SUCCESS,
+  payload: conversations,
+})
+export const getConversationsError = (error) => ({
+  type: GET_CONVERSATIONS_ERROR,
+  payload: error,
 })

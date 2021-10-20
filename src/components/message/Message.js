@@ -1,14 +1,74 @@
 import { Paper, makeStyles } from "@material-ui/core"
-import { useState } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { useState, useEffect } from "react"
+import { useDispatch } from "react-redux"
 import { ContextMenu } from ".."
+import { firebaseAuth } from "../../api/firebase"
 import {
   handleChangeMessageValue,
   setMessageId,
 } from "../../store/conversations-list"
 import { removeMessageThunk } from "../../store/message-list"
-import { getUserName } from "../../store/profile"
-import { formatDate } from "../../utils"
+
+const auth = firebaseAuth.getAuth()
+
+export function Message({
+  message: { message, author, authorId, date, id },
+  roomId,
+}) {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+
+  const [contextActions, setContextActions] = useState([])
+
+  // set context actions depending if the user is the author or the admin
+  useEffect(() => {
+    if (authorId === auth.currentUser.uid) {
+      setContextActions((prevState) => [
+        ...prevState,
+        {
+          name: "Edit message",
+          func() {
+            dispatch(handleChangeMessageValue(message, roomId))
+            dispatch(setMessageId(id, roomId))
+          },
+          shouldContextClose: true,
+        },
+      ])
+    }
+
+    if (
+      authorId === auth.currentUser.uid ||
+      auth.currentUser.uid === "inO6lM9qPISh0MTl8XcPgVKAsVf1" // admin uid
+    ) {
+      setContextActions((contextActions) => [
+        ...contextActions,
+        {
+          name: "Delete message",
+          func() {
+            dispatch(removeMessageThunk(id, roomId))
+          },
+        },
+      ])
+    }
+  }, [authorId, dispatch, id, message, roomId])
+
+  return (
+    <Paper
+      className={`${classes.message} ${classes.sb1} ${
+        authorId !== auth.currentUser.uid ? classes.messageIncoming : ""
+      }`}
+      elevation={3}
+    >
+      <div className={classes.messageContent}>
+        <p className={classes.author}>{author}:</p> <span>{message}</span>
+        <p className={classes.messageDate}>
+          <sub>{date}</sub>
+        </p>
+      </div>
+      <ContextMenu actions={contextActions} className={classes.contextMenu} />
+    </Paper>
+  )
+}
 
 const useStyles = makeStyles({
   message: {
@@ -78,46 +138,3 @@ const useStyles = makeStyles({
     right: "0",
   },
 })
-
-export function Message({
-  message: { message, author, date = formatDate(new Date()), id },
-  roomId,
-}) {
-  const classes = useStyles()
-  const userName = useSelector(getUserName)
-  const dispatch = useDispatch()
-
-  const [contextActions] = useState([
-    author === userName && {
-      name: "Edit message",
-      func() {
-        dispatch(handleChangeMessageValue(message, roomId))
-        dispatch(setMessageId(id, roomId))
-      },
-      shouldContextClose: true,
-    },
-    {
-      name: "Delete message",
-      func() {
-        dispatch(removeMessageThunk(id, roomId))
-      },
-    },
-  ])
-
-  return (
-    <Paper
-      className={`${classes.message} ${classes.sb1} ${
-        author !== userName ? classes.messageIncoming : ""
-      }`}
-      elevation={3}
-    >
-      <div className={classes.messageContent}>
-        <p className={classes.author}>{author}:</p> <span>{message}</span>
-        <p className={classes.messageDate}>
-          <sub>{date}</sub>
-        </p>
-      </div>
-      <ContextMenu actions={contextActions} className={classes.contextMenu} />
-    </Paper>
-  )
-}

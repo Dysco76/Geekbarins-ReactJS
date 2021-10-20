@@ -12,7 +12,7 @@ import { profileReducer } from "./profile"
 const persistConfig = {
   key: "root",
   storage, // use local storage
-  whitelist: ["profile", "authentication"], // only profile state will be persisted
+  whitelist: ["profile", "authentication"], // only profile and auth states will be persisted
 }
 
 const persistedReducer = persistReducer(

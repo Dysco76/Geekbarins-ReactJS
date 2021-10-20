@@ -2,11 +2,7 @@ import { IconButton, Popover, Button } from "@material-ui/core"
 import { MoreHoriz } from "@material-ui/icons"
 import { useState } from "react"
 
-export const ContextMenu = ({
-  actions = [{ name: "action" }],
-  className,
-  children,
-}) => {
+export const ContextMenu = ({ actions, className, children }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const isOpened = Boolean(anchorEl)
 
@@ -20,7 +16,12 @@ export const ContextMenu = ({
 
   return (
     <>
-      <IconButton size="small" onClick={openPopover} className={className}>
+      <IconButton
+        size="small"
+        onClick={openPopover}
+        className={className}
+        style={{ display: actions.length ? "block" : "none" }}
+      >
         {children || <MoreHoriz fontSize="small" />}
       </IconButton>
       <Popover
