@@ -21,7 +21,7 @@ import { getUserInfo } from "../../store/profile"
 export const ProfileDialog = () => {
   const classes = useStyles()
 
-  const { name, phone, id } = useSelector(getUserInfo)
+  const { name, phone, id, roomsCreated } = useSelector(getUserInfo)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
@@ -102,7 +102,7 @@ export const ProfileDialog = () => {
           <>
             <EditProfileForm
               handleEditClose={handleEditClose}
-              info={{ name, phone, id }}
+              info={{ name, phone, id, roomsCreated }}
             />
           </>
         </Fade>

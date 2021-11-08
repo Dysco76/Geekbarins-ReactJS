@@ -27,6 +27,7 @@ export const signUpThunk = (email, password) => async (dispatch) => {
       id: res.user.uid,
       name: `User${String(Date.now()).slice(-4)}`,
       phone: "",
+      roomsCreated: 0,
     }
     dispatch(signUpSuccess(res.user))
     dispatch(updateProfileFB(newUser))
