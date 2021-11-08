@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { updateProfileInfo } from "../../../store/profile"
+import { updateProfileFB } from "../../../store/profile"
 
 const useStyles = makeStyles({
   editProfileWrapper: {
@@ -29,12 +29,14 @@ const useStyles = makeStyles({
   },
 })
 
-export const EditProfileForm = ({ handleEditClose }) => {
+export const EditProfileForm = ({ handleEditClose, info }) => {
   const classes = useStyles()
 
   const dispatch = useDispatch()
-
-  const [userInfo, setUserInfo] = useState({ name: "User", phone: "", age: "" })
+  const [userInfo, setUserInfo] = useState({
+    name: info.name,
+    phone: info.phone,
+  })
 
   const handleInputChange = (e) => {
     const { id, value } = e.target
@@ -42,7 +44,7 @@ export const EditProfileForm = ({ handleEditClose }) => {
   }
 
   const handleProfileSave = () => {
-    dispatch(updateProfileInfo(userInfo))
+    dispatch(updateProfileFB({ ...userInfo, id: info.id }))
     handleEditClose()
   }
 
@@ -57,18 +59,14 @@ export const EditProfileForm = ({ handleEditClose }) => {
           label="Name"
           id="name"
           onChange={handleInputChange}
+          value={userInfo.name}
         />
         <TextField
           variant="outlined"
           label="Phone"
           id="phone"
           onChange={handleInputChange}
-        />
-        <TextField
-          variant="outlined"
-          label="Age"
-          id="age"
-          onChange={handleInputChange}
+          value={userInfo.phone}
         />
       </div>
       <Button variant="outlined" onClick={handleProfileSave}>

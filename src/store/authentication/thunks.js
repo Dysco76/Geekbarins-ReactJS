@@ -1,5 +1,6 @@
 import { firebaseAuth } from "../../api/firebase"
 
+import { updateProfileFB } from "../profile"
 import {
   authStart,
   loginSuccess,
@@ -21,7 +22,14 @@ export const signUpThunk = (email, password) => async (dispatch) => {
       email,
       password,
     )
+
+    const newUser = {
+      id: res.user.uid,
+      name: `User${String(Date.now()).slice(-4)}`,
+      phone: "",
+    }
     dispatch(signUpSuccess(res.user))
+    dispatch(updateProfileFB(newUser))
   } catch (err) {
     dispatch(authError(err.code))
   }

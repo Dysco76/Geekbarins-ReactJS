@@ -24,9 +24,9 @@ export const setMessageId = (messageId, roomId) => ({
   payload: { messageId, roomId },
 })
 
-export const addNewChat = (chatName, chatId) => ({
+export const addNewChat = (newChat) => ({
   type: ADD_NEW_CHAT,
-  payload: { name: chatName, id: chatId },
+  payload: newChat,
 })
 export const deleteChat = (chatId) => ({
   type: DELETE_CHAT,

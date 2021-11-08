@@ -21,7 +21,7 @@ import { getUserInfo } from "../../store/profile"
 export const ProfileDialog = () => {
   const classes = useStyles()
 
-  const { age, name, phone } = useSelector(getUserInfo)
+  const { name, phone, id } = useSelector(getUserInfo)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
@@ -80,9 +80,6 @@ export const ProfileDialog = () => {
               <ListItem>
                 <ListItemText>Phone: {phone}</ListItemText>
               </ListItem>
-              <ListItem>
-                <ListItemText>Age: {age}</ListItemText>
-              </ListItem>
             </List>
             <Button variant="outlined" onClick={handleEditOpen}>
               Edit Profile
@@ -103,7 +100,10 @@ export const ProfileDialog = () => {
       >
         <Fade in={openEdit}>
           <>
-            <EditProfileForm handleEditClose={handleEditClose} />
+            <EditProfileForm
+              handleEditClose={handleEditClose}
+              info={{ name, phone, id }}
+            />
           </>
         </Fade>
       </Modal>

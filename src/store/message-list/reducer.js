@@ -6,8 +6,8 @@ import {
   ADD_MESSAGE_ROOM,
   DELETE_MESSAGE_ROOM,
   GET_MESSAGES_START,
-  GET_MESSAGES_SUCCESS,
   GET_MESSAGES_ERROR,
+  GET_MESSAGES_SUCCESS,
   RECEIVE_MESSAGE,
   RECEIVE_MESSAGE_UPDATE,
 } from "./types"
@@ -89,7 +89,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
     case ADD_MESSAGE_ROOM: {
       return {
         ...state,
-        rooms: { ...state.rooms, [payload.newRoomId]: [] },
+        rooms: { ...state.rooms, [payload.roomId]: payload.messages },
       }
     }
 
@@ -101,13 +101,12 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
     case GET_MESSAGES_START:
       return { ...state, error: null, pending: true }
     case GET_MESSAGES_SUCCESS:
-      return { pending: false, error: null, rooms: { ...payload } }
+      return { ...state, pending: false, error: null }
     case GET_MESSAGES_ERROR:
       return { ...state, pending: false, error: payload }
 
     case RECEIVE_MESSAGE: {
       if (!state.rooms[payload.roomId]) return state
-
       const messageExists = state.rooms[payload.roomId].find(
         (message) => message.id === payload.message.id,
       )

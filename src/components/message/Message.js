@@ -52,6 +52,8 @@ export function Message({
     }
   }, [authorId, dispatch, id, message, roomId])
 
+  if (id === "shadowMessage") return null
+
   return (
     <Paper
       className={`${classes.message} ${classes.sb1} ${

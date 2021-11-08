@@ -7,3 +7,6 @@ export const getExistingMessageId = (roomId) => (state) =>
     ?.messageId || null
 
 export const getConversationsInfo = (state) => state.conversations
+
+export const getConversationsNames = (state) =>
+  state.conversations.conversations.map((room) => room.title)

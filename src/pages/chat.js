@@ -15,8 +15,9 @@ import {
 } from "../components"
 import {
   getConversationsInfo,
-  getConversationsAndMessagesFB,
+  subscribeToChatsFB,
 } from "../store/conversations-list"
+import { subscribeToMessageRoomsFB } from "../store/message-list"
 
 export const Chat = () => {
   const { roomId } = useParams()
@@ -24,7 +25,13 @@ export const Chat = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getConversationsAndMessagesFB())
+    const unsubscribe1 = dispatch(subscribeToChatsFB())
+    const unsubscribe2 = dispatch(subscribeToMessageRoomsFB())
+
+    return () => {
+      unsubscribe1()
+      unsubscribe2()
+    }
   }, [dispatch])
 
   const chatExists = () => {

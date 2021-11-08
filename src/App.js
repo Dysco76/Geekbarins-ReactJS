@@ -7,6 +7,7 @@ import { firebaseAuth } from "./api/firebase"
 import { PrivateRoute, PublicRoute } from "./components"
 import { Chat, Gists, Login, SignUp } from "./pages"
 import { setSession, getSessionInfo } from "./store/authentication"
+import { getProfileFB } from "./store/profile"
 
 const auth = firebaseAuth.getAuth()
 
@@ -19,6 +20,7 @@ export function App() {
     const unsubscribe = firebaseAuth.onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setSession(user))
+        dispatch(getProfileFB(user.uid))
       }
     })
     return unsubscribe

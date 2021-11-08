@@ -1,30 +1,13 @@
-import { onChildAdded, ref } from "@firebase/database"
 import { List, makeStyles } from "@material-ui/core"
-import { useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import { useParams } from "react-router-dom"
+import { useSelector } from "react-redux"
 import { ProfileDialog, AddChatModal, Loader } from ".."
-import { db } from "../../api/firebase"
 import { getConversationsInfo } from "../../store/conversations-list"
 import { ChatBlock } from "."
 
 export const ChatList = () => {
   const classes = useStyles()
-  const { roomId } = useParams()
 
   const { pending, error, conversations } = useSelector(getConversationsInfo)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    const conversationsRef = ref(db, `conversations`)
-    const unsubscribeAdded = onChildAdded(conversationsRef, (snapshot) => {
-      console.log(snapshot.val())
-    })
-
-    return () => {
-      unsubscribeAdded()
-    }
-  }, [dispatch, roomId])
 
   return (
     <div className={classes.wrapper}>

@@ -1,10 +1,4 @@
 import {
-  ref,
-  onChildAdded,
-  onChildChanged,
-  onChildRemoved,
-} from "@firebase/database"
-import {
   Paper,
   TextField,
   InputAdornment,
@@ -17,7 +11,7 @@ import { useRef, useCallback, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams, Redirect } from "react-router"
 import { Message, Loader, SystemMessage } from "../"
-import { db, firebaseAuth } from "../../api/firebase"
+import { firebaseAuth } from "../../api/firebase"
 import {
   handleChangeMessageValue,
   getCurrentInput,
@@ -28,9 +22,7 @@ import {
   getMessagesById,
   getMessagesInfo,
   editMessageThunk,
-  receiveMessage,
-  receiveMessageUpdate,
-  deleteMessage,
+  subscribeToMessagesFB,
 } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
 import { formatDate } from "../../utils"
@@ -40,7 +32,7 @@ export const MessageList = () => {
   const classes = useStyles()
   const auth = firebaseAuth.getAuth()
 
-  const messageList = useRef(null)
+  const messageList = useRef()
 
   const dispatch = useDispatch()
 
@@ -86,34 +78,18 @@ export const MessageList = () => {
   }
 
   const handleScrollBottom = useCallback(() => {
-    if (messageList.current) {
+    if (messageList.current && messages) {
       messageList.current.scrollTo(0, messageList.current.scrollHeight)
     }
-  }, [messageList])
+  }, [messageList, messages])
 
   useEffect(() => {
     handleScrollBottom()
   }, [handleScrollBottom])
 
   useEffect(() => {
-    const messageRoomRef = ref(db, `messages/${roomId}`)
-    const unsubscribeAdded = onChildAdded(messageRoomRef, (snapshot) => {
-      dispatch(receiveMessage(snapshot.val(), roomId))
-    })
-
-    const unsubscribeChanged = onChildChanged(messageRoomRef, (snapshot) => {
-      dispatch(receiveMessageUpdate(snapshot.val(), roomId))
-    })
-
-    const unsubscribeRemoved = onChildRemoved(messageRoomRef, (snapshot) => {
-      dispatch(deleteMessage(snapshot.val().id, roomId))
-    })
-
-    return () => {
-      unsubscribeAdded()
-      unsubscribeChanged()
-      unsubscribeRemoved()
-    }
+    const unsubscribeFromMessages = dispatch(subscribeToMessagesFB(roomId))
+    return unsubscribeFromMessages
   }, [dispatch, roomId])
 
   if (pending)
@@ -132,9 +108,10 @@ export const MessageList = () => {
   ) : (
     <div className={classes.wrapper}>
       <div ref={messageList} className={classes.messageList}>
-        {messages.map((message) => (
-          <Message message={message} key={message.id} roomId={roomId} />
-        ))}
+        {messages.length > 1 &&
+          messages.map((message) => (
+            <Message message={message} key={message.id} roomId={roomId} />
+          ))}
       </div>
 
       <Paper elevation={3} className={classes.messageForm}>

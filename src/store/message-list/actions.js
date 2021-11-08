@@ -25,9 +25,9 @@ export const editMessage = (message, roomId) => ({
   type: EDIT_MESSAGE,
   payload: { message, roomId },
 })
-export const addMessageRoom = (roomId) => ({
+export const addMessageRoom = (roomId, messages) => ({
   type: ADD_MESSAGE_ROOM,
-  payload: { newRoomId: roomId },
+  payload: { roomId, messages },
 })
 export const deleteMessageRoom = (roomId) => ({
   type: DELETE_MESSAGE_ROOM,
@@ -36,9 +36,8 @@ export const deleteMessageRoom = (roomId) => ({
 export const getMessagesStart = () => ({
   type: GET_MESSAGES_START,
 })
-export const getMessagesSuccess = (messages) => ({
+export const getMessagesSuccess = () => ({
   type: GET_MESSAGES_SUCCESS,
-  payload: messages,
 })
 export const getMessagesError = (error) => ({
   type: GET_MESSAGES_ERROR,

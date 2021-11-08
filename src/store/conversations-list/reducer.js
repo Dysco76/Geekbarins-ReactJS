@@ -37,28 +37,36 @@ export const conversationsReducer = (
       return setInputValue(state, payload)
 
     case SET_MESSAGE_ID:
-      return state.map((chat) =>
-        chat.id === payload.roomId
-          ? { ...chat, messageId: payload?.messageId || null }
-          : chat,
-      )
+      return {
+        ...state,
+        conversations: state.conversations.map((chat) =>
+          chat.id === payload.roomId
+            ? { ...chat, messageId: payload?.messageId || null }
+            : chat,
+        ),
+      }
 
     case ADD_NEW_CHAT:
       return {
         ...state,
+        pending: false,
+        error: false,
         conversations: [
           ...state.conversations,
           {
-            title: payload.name,
-            id: payload.id,
-            currentInput: "",
+            ...payload,
             messageId: null,
           },
         ],
       }
 
     case DELETE_CHAT:
-      return state.conversations.filter((chat) => chat.id !== payload.id)
+      return {
+        ...state,
+        conversations: state.conversations.filter(
+          (chat) => chat.id !== payload.id,
+        ),
+      }
 
     case SET_LAST_MESSAGE:
       return {

@@ -1,7 +1,5 @@
-import { onChildChanged, ref } from "@firebase/database"
 import {
   Avatar,
-  Link,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -9,21 +7,23 @@ import {
 } from "@material-ui/core"
 import { Close, Group } from "@material-ui/icons"
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router"
+import { Link } from "react-router-dom"
 import { ContextMenu } from "../.."
-import { db } from "../../../api/firebase"
 import {
   deleteChatThunk,
-  setLastMessage,
+  subscribeToLastMessageFB,
 } from "../../../store/conversations-list"
+import { getUserInfo, updateRoomsCreatedFB } from "../../../store/profile"
 
 export const ChatBlock = ({ chat, roomId }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
+  const { id, roomsCreated } = useSelector(getUserInfo)
 
-  const { author, message, date } = chat.lastMessage
+  const { author, message, date } = chat.lastMessage || {}
   const messageText =
     (author + message).length > 30
       ? message.slice(0, 30 - author.length) + "..."
@@ -34,6 +34,7 @@ export const ChatBlock = ({ chat, roomId }) => {
       name: "Delete room",
       func() {
         dispatch(deleteChatThunk(this.chatId))
+        dispatch(updateRoomsCreatedFB(id, Number(roomsCreated) - 1))
         roomId === this.chatId && history.push("/chat")
       },
       chatId: null,
@@ -49,16 +50,8 @@ export const ChatBlock = ({ chat, roomId }) => {
 
   // watching for lastMessage change in FB to set new last message
   useEffect(() => {
-    const conversationsRef = ref(db, `conversations/${chat.id}`)
-    const unsubscribeAdded = onChildChanged(conversationsRef, (snapshot) => {
-      if (snapshot.key === "lastMessage") {
-        dispatch(setLastMessage(snapshot.val(), chat.id))
-      }
-    })
-
-    return () => {
-      unsubscribeAdded()
-    }
+    const unsubscribe = dispatch(subscribeToLastMessageFB(chat.id))
+    return unsubscribe
   }, [dispatch, chat.id])
 
   return (
@@ -82,16 +75,18 @@ export const ChatBlock = ({ chat, roomId }) => {
           />
         </ListItem>
       </Link>
-      <ContextMenu
-        className={classes.contextMenu}
-        actions={contextActions.map((action) =>
-          action.name === "Delete room"
-            ? { ...action, chatId: chat.id }
-            : action,
-        )}
-      >
-        <Close fontSize="small" />
-      </ContextMenu>
+      {id === chat.creator.id || id === "inO6lM9qPISh0MTl8XcPgVKAsVf1" ? (
+        <ContextMenu
+          className={classes.contextMenu}
+          actions={contextActions.map((action) =>
+            action.name === "Delete room"
+              ? { ...action, chatId: chat.id }
+              : action,
+          )}
+        >
+          <Close fontSize="small" />
+        </ContextMenu>
+      ) : null}
     </div>
   )
 }
