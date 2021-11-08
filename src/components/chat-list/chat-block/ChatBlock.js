@@ -34,7 +34,9 @@ export const ChatBlock = ({ chat, roomId }) => {
       name: "Delete room",
       func() {
         dispatch(deleteChatThunk(this.chatId))
-        dispatch(updateRoomsCreatedFB(id, Number(roomsCreated) - 1))
+        dispatch(
+          updateRoomsCreatedFB(chat.creator.id, Number(roomsCreated) - 1),
+        )
         roomId === this.chatId && history.push("/chat")
       },
       chatId: null,
