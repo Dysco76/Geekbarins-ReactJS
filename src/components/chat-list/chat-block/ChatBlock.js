@@ -21,7 +21,7 @@ export const ChatBlock = ({ chat, roomId }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
-  const { id, roomsCreated } = useSelector(getUserInfo)
+  const { id } = useSelector(getUserInfo)
 
   const { author, message, date } = chat.lastMessage || {}
   const messageText =
@@ -34,9 +34,7 @@ export const ChatBlock = ({ chat, roomId }) => {
       name: "Delete room",
       func() {
         dispatch(deleteChatThunk(this.chatId))
-        dispatch(
-          updateRoomsCreatedFB(chat.creator.id, Number(roomsCreated) - 1),
-        )
+        dispatch(updateRoomsCreatedFB(chat.creator.id, "decrement"))
         roomId === this.chatId && history.push("/chat")
       },
       chatId: null,

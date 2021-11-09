@@ -44,7 +44,13 @@ export const EditProfileForm = ({ handleEditClose, info }) => {
   }
 
   const handleProfileSave = () => {
-    dispatch(updateProfileFB({ ...userInfo, id: info.id }))
+    dispatch(
+      updateProfileFB({
+        ...userInfo,
+        id: info.id,
+        roomsCreated: info.roomsCreated,
+      }),
+    )
     handleEditClose()
   }
 

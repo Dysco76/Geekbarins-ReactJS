@@ -63,7 +63,7 @@ export const AddChatForm = ({ handleModalClose }) => {
     }
 
     dispatch(addNewChatThunk(newChat))
-    dispatch(updateRoomsCreatedFB(id, roomsCreated + 1))
+    dispatch(updateRoomsCreatedFB(id, "increment"))
     handleModalClose()
   }
   return (

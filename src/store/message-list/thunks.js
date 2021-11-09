@@ -99,7 +99,7 @@ export const removeMessageRoomFB = (chatId) => async (dispatch) => {
   }
 }
 
-export const subscribeToMessageRoomsFB = () => async (dispatch, getState) => {
+export const subscribeToMessageRoomsFB = () => (dispatch, getState) => {
   dispatch(getMessagesStart())
   let addedMessageRooms = 0
   const messageRoomsRef = ref(db, `messages/`)
@@ -115,7 +115,9 @@ export const subscribeToMessageRoomsFB = () => async (dispatch, getState) => {
     onChildRemoved(messageRoomsRef, (snapshot) => {
       dispatch(deleteMessageRoom(snapshot.val()))
     })
-    return unsubscribe
+    return () => {
+      unsubscribe()
+    }
   } catch (err) {
     dispatch(getMessagesError(err.message))
   }
