@@ -73,12 +73,16 @@ export const ProfileDialog = () => {
             <Avatar className={classes.avatar}>
               <AccountCircle className={classes.avatarIcon} />
             </Avatar>
-            <List>
+            <List className={classes.profileList}>
               <ListItem>
-                <ListItemText>Name: {name}</ListItemText>
+                <ListItemText className={classes.profileLi}>
+                  Name: {name}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <ListItemText>Phone: {phone}</ListItemText>
+                <ListItemText className={classes.profileLi}>
+                  Phone: {phone}
+                </ListItemText>
               </ListItem>
             </List>
             <Button variant="outlined" onClick={handleEditOpen}>
@@ -136,6 +140,8 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    width: "100%",
+    boxSizing: "border-box",
   },
 
   avatar: {
@@ -146,5 +152,13 @@ const useStyles = makeStyles({
   avatarIcon: {
     width: "100%",
     height: "100%",
+  },
+
+  profileList: {
+    width: "100%",
+  },
+
+  profileLi: {
+    wordWrap: "break-word",
   },
 })

@@ -4,9 +4,10 @@ import {
   ListItemAvatar,
   ListItemText,
   makeStyles,
+  Tooltip,
 } from "@material-ui/core"
 import { Close, Group } from "@material-ui/icons"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
@@ -22,12 +23,24 @@ export const ChatBlock = ({ chat, roomId }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const { id } = useSelector(getUserInfo)
+  const wrapperRef = useRef(null)
 
-  const { author, message, date } = chat.lastMessage || {}
+  const { author = "", message = "", date = "" } = chat.lastMessage || {}
+  const authorText = author.length > 14 ? author.slice(0, 14) + "..." : author
   const messageText =
-    (author + message).length > 30
-      ? message.slice(0, 30 - author.length) + "..."
+    (authorText + message).length > 30
+      ? message.slice(0, 30 - authorText.length) + "..."
       : message
+
+  const [titleString, setTitleString] = useState("")
+  const setChatTitleLength = useCallback(() => {
+    const maxVisibleLength = Math.floor(wrapperRef.current.clientWidth / 22)
+    setTitleString(
+      chat.title.length > maxVisibleLength
+        ? chat.title.slice(0, maxVisibleLength) + "..."
+        : chat.title,
+    )
+  }, [chat.title])
 
   const [contextActions] = useState([
     {
@@ -54,8 +67,13 @@ export const ChatBlock = ({ chat, roomId }) => {
     return unsubscribe
   }, [dispatch, chat.id])
 
+  useEffect(() => {
+    setChatTitleLength()
+    window.addEventListener("resize", setChatTitleLength)
+  }, [setChatTitleLength])
+
   return (
-    <div className={classes.chatWrapper} key={chat.id}>
+    <div className={classes.chatWrapper} key={chat.id} ref={wrapperRef}>
       <Link to={`/chat/${chat.id}`} className={classes.chatBlock}>
         <ListItem button={true} selected={roomId === chat.id}>
           <ListItemAvatar>
@@ -64,10 +82,14 @@ export const ChatBlock = ({ chat, roomId }) => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={<span className={classes.chatTitle}>{chat.title}</span>}
+            primary={
+              <Tooltip title={chat.title}>
+                <span className={classes.chatTitle}>{titleString}</span>
+              </Tooltip>
+            }
             secondary={
               <>
-                {author ? `${author}: ${messageText}` : null}
+                {author ? `${authorText}: ${messageText}` : null}
                 <br />
                 <sub>{date}</sub>
               </>

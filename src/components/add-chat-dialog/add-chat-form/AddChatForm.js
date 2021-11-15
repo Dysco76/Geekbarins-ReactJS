@@ -25,25 +25,37 @@ export const AddChatForm = ({ handleModalClose }) => {
 
   const isUserAdmin = id === "inO6lM9qPISh0MTl8XcPgVKAsVf1"
   const [chatName, setChatName] = useState("New Room")
-  const [error, setError] = useState("")
+  const [errors, setErrors] = useState([])
 
   const ableToCreateRoom = () => {
-    setError("")
+    setErrors([])
     if (!isUserAdmin && roomsCreated > 1) {
-      setError(
+      setErrors([
         "Created rooms limit exceeded. Please delete an existing room created by you",
-      )
+      ])
       return false
     } else {
-      if (!chatName) {
-        setError("Room name cannot be empty")
-        return false
-      }
-      if (existingRooms.includes(chatName)) {
-        setError("Room already exists")
-        return false
-      }
+      if (!validateRoomName()) return false
     }
+    return true
+  }
+
+  const validateRoomName = () => {
+    const errorMessage = []
+    if (chatName.trim().length > 100) {
+      errorMessage.push("Room name cannot be longer than 100 characters")
+    }
+
+    if (!chatName.trim()) errorMessage.push("Room name cannot be empty")
+
+    if (existingRooms.includes(chatName))
+      errorMessage.push("Room already exists")
+
+    if (errorMessage.length > 0) {
+      setErrors((prev) => [...prev, ...errorMessage])
+      return false
+    }
+
     return true
   }
 
@@ -59,7 +71,7 @@ export const AddChatForm = ({ handleModalClose }) => {
         name,
       },
       id: String(Date.now()).slice(-4) + nanoid(),
-      title: chatName,
+      title: chatName.trim(),
     }
 
     dispatch(addNewChatThunk(newChat))
@@ -80,7 +92,11 @@ export const AddChatForm = ({ handleModalClose }) => {
           value={chatName}
           placeholder="Name your room"
         />
-        <span style={{ color: "red" }}>{error}</span>
+        {errors.map((error) => (
+          <span key={error} style={{ color: "red" }}>
+            {error}
+          </span>
+        ))}
       </div>
       <div className={classes.buttonsWrapper}>
         <Button

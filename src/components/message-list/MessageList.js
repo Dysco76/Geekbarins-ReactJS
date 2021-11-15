@@ -78,10 +78,10 @@ export const MessageList = () => {
   }
 
   const handleScrollBottom = useCallback(() => {
-    if (messageList.current && messages) {
+    if (messageList.current && !pending) {
       messageList.current.scrollTo(0, messageList.current.scrollHeight)
     }
-  }, [messageList, messages])
+  }, [messageList, pending])
 
   useEffect(() => {
     handleScrollBottom()

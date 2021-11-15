@@ -8,7 +8,11 @@ import {
   onChildRemoved,
 } from "firebase/database"
 import { db } from "../../api/firebase"
-import { clearMessageInput, setLastMessageFB } from "../conversations-list"
+import {
+  clearMessageInput,
+  setLastMessageFB,
+  setMessageId,
+} from "../conversations-list"
 import {
   addMessage,
   deleteMessage,
@@ -68,6 +72,7 @@ export const editMessageThunk =
       dispatch(setLastMessageFB(newMessage, roomId))
       dispatch(editMessage(message, roomId))
       dispatch(clearMessageInput(roomId))
+      dispatch(setMessageId("", roomId))
     } catch (err) {
       console.error(err)
     }

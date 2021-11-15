@@ -31,7 +31,7 @@ export const conversationsReducer = (
 ) => {
   switch (type) {
     case HANDLE_CHANGE_MESSAGE_VALUE:
-      return setInputValue(state, payload)
+      return payload.value.length > 999 ? state : setInputValue(state, payload)
 
     case CLEAR_MESSAGE_INPUT:
       return setInputValue(state, payload)

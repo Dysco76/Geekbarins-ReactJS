@@ -127,6 +127,7 @@ const useStyles = makeStyles({
   author: {
     color: "#4caf50",
     margin: 0,
+    padding: "0 25px 0 0",
   },
 
   messageDate: {
