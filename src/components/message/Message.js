@@ -22,6 +22,8 @@ export function Message({
 
   // set context actions depending if the user is the author or the admin
   useEffect(() => {
+    // remove existing context actions on re-render
+    setContextActions([])
     if (authorId === auth.currentUser.uid) {
       setContextActions((prevState) => [
         ...prevState,
