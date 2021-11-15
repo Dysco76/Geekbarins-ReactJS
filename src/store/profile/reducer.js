@@ -1,23 +1,23 @@
-import { UPDATE_PROFILE_INFO } from "./types"
+import { SET_PROFILE_INFO, UPDATE_ROOMS_CREATED } from "./types"
 
 const initialState = {
-  user: {
-    id: "test-user",
-    name: "User",
-    phone: "1234567",
-    age: "18",
-  },
+  user: {},
 }
 
 export const profileReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case UPDATE_PROFILE_INFO:
+    case SET_PROFILE_INFO:
+      return {
+        ...state,
+        user: payload,
+      }
+
+    case UPDATE_ROOMS_CREATED:
       return {
         ...state,
         user: {
-          name: payload.name,
-          phone: payload.phone,
-          age: payload.age,
+          ...state.user,
+          roomsCreated: payload,
         },
       }
     default:

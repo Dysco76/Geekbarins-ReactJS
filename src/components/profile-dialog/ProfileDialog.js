@@ -15,48 +15,13 @@ import {
 import { Close, AccountCircle } from "@material-ui/icons"
 import React, { useState, useCallback } from "react"
 import { useSelector } from "react-redux"
-import { EditProfileForm } from "../"
+import { EditProfileForm, Logout } from "../"
 import { getUserInfo } from "../../store/profile"
-
-const useStyles = makeStyles({
-  paper: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
-
-  openButton: {
-    marginLeft: "20px",
-  },
-
-  closeButton: {
-    position: "absolute",
-    right: "5px",
-    top: "5px",
-  },
-
-  infoWrapper: {
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-
-  avatar: {
-    width: "70px",
-    height: "70px",
-  },
-
-  avatarIcon: {
-    width: "100%",
-    height: "100%",
-  },
-})
 
 export const ProfileDialog = () => {
   const classes = useStyles()
 
-  const { age, name, phone } = useSelector(getUserInfo)
+  const { name, phone, id } = useSelector(getUserInfo)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
@@ -115,14 +80,12 @@ export const ProfileDialog = () => {
               <ListItem>
                 <ListItemText>Phone: {phone}</ListItemText>
               </ListItem>
-              <ListItem>
-                <ListItemText>Age: {age}</ListItemText>
-              </ListItem>
             </List>
             <Button variant="outlined" onClick={handleEditOpen}>
               Edit Profile
             </Button>
           </Paper>
+          <Logout style={{ margin: "auto 0 20px" }} />
         </Paper>
       </Drawer>
 
@@ -137,10 +100,51 @@ export const ProfileDialog = () => {
       >
         <Fade in={openEdit}>
           <>
-            <EditProfileForm handleEditClose={handleEditClose} />
+            <EditProfileForm
+              handleEditClose={handleEditClose}
+              info={{ name, phone, id }}
+            />
           </>
         </Fade>
       </Modal>
     </div>
   )
 }
+
+const useStyles = makeStyles({
+  paper: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  openButton: {
+    marginLeft: "20px",
+  },
+
+  closeButton: {
+    position: "absolute",
+    right: "5px",
+    top: "5px",
+  },
+
+  infoWrapper: {
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  avatar: {
+    width: "70px",
+    height: "70px",
+  },
+
+  avatarIcon: {
+    width: "100%",
+    height: "100%",
+  },
+})

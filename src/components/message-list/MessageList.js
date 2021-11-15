@@ -6,10 +6,12 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
+import { nanoid } from "nanoid"
 import { useRef, useCallback, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { useParams } from "react-router"
-import { Message } from "../"
+import { useParams, Redirect } from "react-router"
+import { Message, Loader, SystemMessage } from "../"
+import { firebaseAuth } from "../../api/firebase"
 import {
   handleChangeMessageValue,
   getCurrentInput,
@@ -18,56 +20,25 @@ import {
 import {
   sendMessageThunk,
   getMessagesById,
+  getMessagesInfo,
   editMessageThunk,
+  subscribeToMessagesFB,
 } from "../../store/message-list"
 import { getUserName } from "../../store/profile"
-
-const useStyles = makeStyles({
-  wrapper: {
-    position: "relative",
-    height: "100vh",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    background: "rgb(92,207,104)",
-    backgroundImage:
-      "linear-gradient(25deg, rgba(92,207,104,1) 11%, rgba(0,212,255,1) 96%)",
-  },
-  messageList: {
-    paddingTop: "20px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    overflow: "auto",
-  },
-  messageForm: {
-    width: "100%",
-    position: "sticky",
-    bottom: "0",
-  },
-  messageInput: {
-    backgroundColor: "#fff",
-    padding: "10px",
-  },
-
-  sendButton: {
-    marginRight: "20px",
-    marginBottom: "10px",
-    cursor: "pointer",
-  },
-})
+import { formatDate } from "../../utils"
 
 export const MessageList = () => {
   const { roomId } = useParams()
   const classes = useStyles()
+  const auth = firebaseAuth.getAuth()
 
-  const messageList = useRef(null)
+  const messageList = useRef()
 
   const dispatch = useDispatch()
 
   const userName = useSelector(getUserName)
   const messages = useSelector(getMessagesById(roomId))
+  const { pending, error } = useSelector(getMessagesInfo)
   const currentInput = useSelector(getCurrentInput(roomId))
   const existingMessageId = useSelector(getExistingMessageId(roomId))
 
@@ -85,7 +56,6 @@ export const MessageList = () => {
         editMessageThunk(
           {
             message: currentInput,
-            author: userName,
             id: existingMessageId,
           },
           roomId,
@@ -97,6 +67,9 @@ export const MessageList = () => {
           {
             message: currentInput,
             author: userName,
+            date: formatDate(new Date()),
+            id: String(Date.now()) + nanoid(),
+            authorId: auth.currentUser.uid,
           },
           roomId,
         ),
@@ -105,21 +78,40 @@ export const MessageList = () => {
   }
 
   const handleScrollBottom = useCallback(() => {
-    if (messageList.current) {
+    if (messageList.current && messages) {
       messageList.current.scrollTo(0, messageList.current.scrollHeight)
     }
-  }, [messageList])
+  }, [messageList, messages])
 
   useEffect(() => {
     handleScrollBottom()
   }, [handleScrollBottom])
 
-  return (
+  useEffect(() => {
+    const unsubscribeFromMessages = dispatch(subscribeToMessagesFB(roomId))
+    return unsubscribeFromMessages
+  }, [dispatch, roomId])
+
+  if (pending)
+    return <Loader width="100" height="100" color="#3F51B5" type="spin" />
+
+  if (error)
+    return (
+      <SystemMessage
+        message={`Failed to fetch messages. ${error}`}
+        error={true}
+      />
+    )
+
+  return !messages ? (
+    <Redirect to="/chat/room-not-found" />
+  ) : (
     <div className={classes.wrapper}>
       <div ref={messageList} className={classes.messageList}>
-        {messages.map((message) => (
-          <Message message={message} key={message.id} roomId={roomId} />
-        ))}
+        {messages.length > 1 &&
+          messages.map((message) => (
+            <Message message={message} key={message.id} roomId={roomId} />
+          ))}
       </div>
 
       <Paper elevation={3} className={classes.messageForm}>
@@ -151,3 +143,37 @@ export const MessageList = () => {
     </div>
   )
 }
+
+const useStyles = makeStyles({
+  wrapper: {
+    position: "relative",
+    height: "100%",
+    width: "100%",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  messageList: {
+    paddingTop: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    overflow: "auto",
+  },
+  messageForm: {
+    width: "100%",
+    position: "sticky",
+    bottom: "0",
+  },
+  messageInput: {
+    backgroundColor: "#fff",
+    padding: "10px",
+  },
+
+  sendButton: {
+    marginRight: "20px",
+    marginBottom: "10px",
+    cursor: "pointer",
+  },
+})

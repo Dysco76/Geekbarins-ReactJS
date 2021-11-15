@@ -1,16 +1,44 @@
 import { Grid } from "@material-ui/core"
-import { useSelector } from "react-redux"
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router"
-import { Switch, Route, Redirect } from "react-router-dom"
-import { ChatList, MessageList } from "../components"
-import { getConversations } from "../store/conversations-list"
+import {
+  Switch,
+  Route,
+  // Redirect
+} from "react-router-dom"
+import {
+  ChatList,
+  MessageList,
+  RoomContainer,
+  SystemMessage,
+} from "../components"
+import {
+  getConversationsInfo,
+  subscribeToChatsFB,
+} from "../store/conversations-list"
+import { subscribeToMessageRoomsFB } from "../store/message-list"
 
 export const Chat = () => {
   const { roomId } = useParams()
-  const conversations = useSelector(getConversations)
+  const { conversations } = useSelector(getConversationsInfo)
+  const dispatch = useDispatch()
 
-  const chatExists = conversations.some((chat) => chat.id === roomId)
+  useEffect(() => {
+    const unsubscribe1 = dispatch(subscribeToChatsFB())
+    const unsubscribe2 = dispatch(subscribeToMessageRoomsFB())
 
+    return () => {
+      unsubscribe1()
+      unsubscribe2()
+    }
+  }, [dispatch])
+
+  const chatExists = () => {
+    return conversations?.some((chat) => chat.id === roomId)
+  }
+
+  chatExists()
   return (
     <Switch>
       <Route path={["/chat/:roomId", "/chat"]}>
@@ -19,19 +47,21 @@ export const Chat = () => {
             <ChatList />
           </Grid>
           <Grid item={true} xs={12} md={9}>
-            <Route exact={true} path="/chat">
-              <h1>Select room</h1>
-            </Route>
-            <Route path="/chat/:roomId">
-              {chatExists ? (
+            <RoomContainer>
+              <Route exact={true} path="/chat">
+                <SystemMessage message="Please select a room from the list" />
+              </Route>
+              <Route path="/chat/:roomId">
+                {/* {chatExists() ? ( */}
                 <MessageList />
-              ) : (
-                <Redirect to="/chat/room-not-found" />
-              )}
-            </Route>
-            <Route path="/chat/room-not-found">
-              <h1>This room does not exist :c</h1>
-            </Route>
+                {/* ) : ( */}
+                {/* <Redirect to="/chat/room-not-found" /> */}
+                {/* )} */}
+              </Route>
+              <Route path="/chat/room-not-found">
+                <SystemMessage message="This room does not exist :c" />
+              </Route>
+            </RoomContainer>
           </Grid>
         </Grid>
       </Route>

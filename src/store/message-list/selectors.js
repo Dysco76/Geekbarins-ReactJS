@@ -1,3 +1,8 @@
-export const getAllMessages = (state) => state.messageList
+export const getAllMessages = (state) => state.messageList.rooms || {}
 export const getMessagesById = (roomId) => (state) =>
-  state.messageList[roomId] || ""
+  state?.messageList.rooms[roomId] || ""
+export const getMessagesInfo = (state) => state.messageList
+export const getLastMessage = (roomId) => (state) => {
+  const room = state.messageList.rooms[roomId] || []
+  return room[room.length - 1] || { author: "", message: "", id: "" }
+}
