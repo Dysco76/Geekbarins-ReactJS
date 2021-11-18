@@ -3,6 +3,7 @@ import {
   // get,
   set,
   child,
+  update,
   onChildAdded,
   onChildChanged,
   onChildRemoved,
@@ -25,7 +26,7 @@ import {
   addMessageRoom,
 } from "./"
 import { deleteMessageRoom } from "./actions"
-const getLastMessage = (state, roomId) => {
+export const getLastMessage = (state, roomId) => {
   const room = state.messageList.rooms[roomId] || []
   return room[room.length - 1]
 }
@@ -38,7 +39,7 @@ export const sendMessageThunk = (message, roomId) => async (dispatch) => {
 
     dispatch(addMessage(message, roomId))
     dispatch(setLastMessageFB(message, roomId))
-    dispatch(clearMessageInput(roomId))
+    // dispatch(clearMessageInput(roomId))
   } catch (err) {
     console.error(err)
   }
@@ -60,16 +61,23 @@ export const removeMessageThunk =
   }
 export const editMessageThunk =
   (message, roomId) => async (dispatch, getState) => {
-    const existingMessage = getState().messageList.rooms[roomId].find(
+    const state = getState()
+    const existingMessage = state.messageList.rooms[roomId].find(
       (item) => item.id === message.id,
     )
-    const newMessage = { ...existingMessage, message: message.message }
 
     const messageRef = ref(db, `messages/${roomId}/${message.id}`)
 
     try {
       await set(child(messageRef, "/message"), message.message)
-      dispatch(setLastMessageFB(newMessage, roomId))
+      if (existingMessage.id === getLastMessage(state, roomId).id)
+        dispatch(
+          setLastMessageFB(
+            { ...existingMessage, message: message.message },
+            roomId,
+          ),
+        )
+
       dispatch(editMessage(message, roomId))
       dispatch(clearMessageInput(roomId))
       dispatch(setMessageId("", roomId))
@@ -164,3 +172,26 @@ export const subscribeToMessagesFB = (roomId) => (dispatch) => {
     unsubscribeRemoved()
   }
 }
+
+export const updateMessagesAuthorNameFB =
+  (uid, name) => async (dispatch, getState) => {
+    const state = getState()
+    const rooms = state.messageList.rooms
+    const updates = {}
+
+    Object.keys(rooms).forEach((roomId) => {
+      const lastMessage = getLastMessage(state, roomId)
+      if (uid === lastMessage.authorId)
+        dispatch(setLastMessageFB({ ...lastMessage, author: name }, roomId))
+      rooms[roomId].forEach((message) => {
+        if (message.authorId === uid) {
+          updates[`/messages/${roomId}/${message.id}/author`] = name
+        }
+      })
+    })
+    try {
+      await update(ref(db), updates)
+    } catch (err) {
+      console.error(err)
+    }
+  }

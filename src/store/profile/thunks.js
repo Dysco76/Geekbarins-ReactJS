@@ -1,5 +1,6 @@
 import { get, ref, set } from "@firebase/database"
 import { db } from "../../api/firebase"
+import { updateMessagesAuthorNameFB } from "../message-list"
 import { setProfileInfo, updateRoomsCreated } from "."
 
 export const getProfileFB = (id) => async (dispatch) => {
@@ -13,8 +14,13 @@ export const getProfileFB = (id) => async (dispatch) => {
   }
 }
 
-export const updateProfileFB = (userInfo) => async (dispatch) => {
+export const updateProfileFB = (userInfo) => async (dispatch, getState) => {
   const userRef = ref(db, `/profile/${userInfo.id}`)
+
+  const currentUsername = getState().profile.user.name
+  if (userInfo.name !== currentUsername) {
+    dispatch(updateMessagesAuthorNameFB(userInfo.id, userInfo.name))
+  }
 
   try {
     await set(userRef, userInfo)

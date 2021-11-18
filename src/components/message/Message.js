@@ -30,6 +30,7 @@ export function Message({
         {
           name: "Edit message",
           func() {
+            console.log("editing", message, roomId)
             dispatch(handleChangeMessageValue(message, roomId))
             dispatch(setMessageId(id, roomId))
           },

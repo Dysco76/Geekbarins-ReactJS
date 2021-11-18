@@ -9,7 +9,7 @@ import {
 import { Close, Group } from "@material-ui/icons"
 import { useEffect, useState, useRef, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router"
+import { useHistory, useParams } from "react-router"
 import { Link } from "react-router-dom"
 import { ContextMenu } from "../.."
 import {
@@ -18,7 +18,8 @@ import {
 } from "../../../store/conversations-list"
 import { getUserInfo, updateRoomsCreatedFB } from "../../../store/profile"
 
-export const ChatBlock = ({ chat, roomId }) => {
+export const ChatBlock = ({ chat }) => {
+  const { roomId } = useParams()
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -34,6 +35,7 @@ export const ChatBlock = ({ chat, roomId }) => {
 
   const [titleString, setTitleString] = useState("")
   const setChatTitleLength = useCallback(() => {
+    if (!wrapperRef.current) return
     const maxVisibleLength = Math.floor(wrapperRef.current.clientWidth / 22)
     setTitleString(
       chat.title.length > maxVisibleLength

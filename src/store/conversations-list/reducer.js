@@ -5,7 +5,6 @@ import {
   ADD_NEW_CHAT,
   DELETE_CHAT,
   GET_CONVERSATIONS_START,
-  GET_CONVERSATIONS_SUCCESS,
   GET_CONVERSATIONS_ERROR,
   SET_LAST_MESSAGE,
 } from "./types"
@@ -30,8 +29,9 @@ export const conversationsReducer = (
   { type, payload },
 ) => {
   switch (type) {
-    case HANDLE_CHANGE_MESSAGE_VALUE:
+    case HANDLE_CHANGE_MESSAGE_VALUE: {
       return payload.value.length > 999 ? state : setInputValue(state, payload)
+    }
 
     case CLEAR_MESSAGE_INPUT:
       return setInputValue(state, payload)
@@ -48,16 +48,19 @@ export const conversationsReducer = (
 
     case ADD_NEW_CHAT:
       return {
-        ...state,
         pending: false,
         error: false,
-        conversations: [
-          ...state.conversations,
-          {
-            ...payload,
-            messageId: null,
-          },
-        ],
+        conversations: state.conversations.find(
+          (chat) => chat.id === payload.id,
+        )
+          ? [...state.conversations]
+          : [
+              ...state.conversations,
+              {
+                ...payload,
+                messageId: null,
+              },
+            ],
       }
 
     case DELETE_CHAT:
@@ -80,8 +83,8 @@ export const conversationsReducer = (
 
     case GET_CONVERSATIONS_START:
       return { ...state, pending: true }
-    case GET_CONVERSATIONS_SUCCESS:
-      return { ...state, pending: false, conversations: payload }
+    // case GET_CONVERSATIONS_SUCCESS:
+    //   return { ...state, pending: false, conversations: payload }
     case GET_CONVERSATIONS_ERROR:
       return { ...state, pending: false, error: payload }
 
