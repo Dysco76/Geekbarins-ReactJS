@@ -129,7 +129,6 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         messageExists &&
         payload.message.author !== messageExists.author
       ) {
-        console.log("updating author")
         messageExists.author = payload.message.author
         return { ...state }
       } else {

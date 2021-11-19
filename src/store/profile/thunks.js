@@ -33,10 +33,11 @@ export const updateProfileFB = (userInfo) => async (dispatch, getState) => {
 export const updateRoomsCreatedFB =
   (userId, operation) => async (dispatch, getState) => {
     const roomsRef = ref(db, `/profile/${userId}/roomsCreated`)
-    const { roomsCreated } = getState().profile.user
-    const value =
-      operation === "increment" ? roomsCreated + 1 : roomsCreated - 1
+
     try {
+      const roomsCreated = (await get(roomsRef)).val()
+      const value =
+        operation === "increment" ? roomsCreated + 1 : roomsCreated - 1
       await set(roomsRef, value)
       dispatch(updateRoomsCreated(value))
     } catch (err) {
