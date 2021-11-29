@@ -1,7 +1,6 @@
 export * from "./chat-list"
 export * from "./message"
 export * from "./message-list"
-export * from "./message-provider"
 export * from "./profile-dialog"
 export * from "./context-menu"
 export * from "./add-chat-dialog"

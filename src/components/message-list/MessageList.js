@@ -1,87 +1,30 @@
-import {
-  Paper,
-  TextField,
-  InputAdornment,
-  Icon,
-  makeStyles,
-} from "@material-ui/core"
-import { Send } from "@material-ui/icons"
-import { nanoid } from "nanoid"
-import { useRef, useCallback, useEffect } from "react"
+import { makeStyles } from "@material-ui/core"
+import { useRef, useCallback, useEffect, memo } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams, Redirect } from "react-router"
-import { Message, Loader, SystemMessage } from "../"
-import { firebaseAuth } from "../../api/firebase"
+import { Message, Loader, SystemMessage, MessageInput } from "../"
 import {
-  handleChangeMessageValue,
-  getCurrentInput,
-  getExistingMessageId,
-} from "../../store/conversations-list"
-import {
-  sendMessageThunk,
   getMessagesById,
   getMessagesInfo,
-  editMessageThunk,
   subscribeToMessagesFB,
 } from "../../store/message-list"
-import { getUserName } from "../../store/profile"
-import { formatDate } from "../../utils"
 
-export const MessageList = () => {
+export const MessageList = memo(() => {
   const { roomId } = useParams()
   const classes = useStyles()
-  const auth = firebaseAuth.getAuth()
 
   const messageList = useRef()
 
   const dispatch = useDispatch()
 
-  const userName = useSelector(getUserName)
   const messages = useSelector(getMessagesById(roomId))
   const { pending, error } = useSelector(getMessagesInfo)
-  const currentInput = useSelector(getCurrentInput(roomId))
-  const existingMessageId = useSelector(getExistingMessageId(roomId))
-
-  const handlePressInput = ({ code }) => {
-    if (code === "Enter") {
-      handleSendMessage()
-    }
-  }
-
-  const handleSendMessage = () => {
-    if (!currentInput) return
-
-    if (existingMessageId) {
-      dispatch(
-        editMessageThunk(
-          {
-            message: currentInput,
-            id: existingMessageId,
-          },
-          roomId,
-        ),
-      )
-    } else {
-      dispatch(
-        sendMessageThunk(
-          {
-            message: currentInput,
-            author: userName,
-            date: formatDate(new Date()),
-            id: String(Date.now()) + nanoid(),
-            authorId: auth.currentUser.uid,
-          },
-          roomId,
-        ),
-      )
-    }
-  }
 
   const handleScrollBottom = useCallback(() => {
-    if (messageList.current && messages) {
+    if (messageList.current && !pending && messages) {
       messageList.current.scrollTo(0, messageList.current.scrollHeight)
     }
-  }, [messageList, messages])
+  }, [messageList, pending, messages])
 
   useEffect(() => {
     handleScrollBottom()
@@ -114,35 +57,10 @@ export const MessageList = () => {
           ))}
       </div>
 
-      <Paper elevation={3} className={classes.messageForm}>
-        <TextField
-          type="text"
-          className={classes.messageInput}
-          fullWidth={true}
-          placeholder="Write your message..."
-          value={currentInput}
-          onChange={(e) =>
-            dispatch(handleChangeMessageValue(e.target.value, roomId))
-          }
-          onKeyPress={handlePressInput}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Icon
-                  className={classes.sendButton}
-                  onClick={handleSendMessage}
-                  color="primary"
-                >
-                  <Send />
-                </Icon>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Paper>
+      <MessageInput />
     </div>
   )
-}
+})
 
 const useStyles = makeStyles({
   wrapper: {
@@ -160,20 +78,5 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "flex-start",
     overflow: "auto",
-  },
-  messageForm: {
-    width: "100%",
-    position: "sticky",
-    bottom: "0",
-  },
-  messageInput: {
-    backgroundColor: "#fff",
-    padding: "10px",
-  },
-
-  sendButton: {
-    marginRight: "20px",
-    marginBottom: "10px",
-    cursor: "pointer",
   },
 })

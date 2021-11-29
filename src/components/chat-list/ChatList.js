@@ -17,7 +17,7 @@ export const ChatList = () => {
       ) : (
         <List component="nav" className={classes.list}>
           {conversations.map((chat) => (
-            <ChatBlock chat={chat} roomId={chat.id} key={chat.id} />
+            <ChatBlock chat={chat} key={chat.id} />
           ))}
         </List>
       )}
@@ -40,15 +40,22 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     border: "1px solid #BDBDBD",
     position: "relative",
-    padding: "20px 0 5px 0",
+    padding: "20px 0 0 0",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    overflowY: "scroll",
+    overflowX: "hidden",
   },
 
   addButtonWrapper: {
-    padding: "0 5px",
+    padding: "5px",
+    boxSizing: "border-box",
     marginTop: "auto",
+    position: "sticky",
+    bottom: "0",
+    backgroundColor: "#fff",
+    width: "100%",
   },
 
   list: {

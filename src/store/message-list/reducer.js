@@ -111,38 +111,46 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         (message) => message.id === payload.message.id,
       )
 
-      if (payload.message.authorId === auth.currentUser.uid || messageExists)
+      if (
+        !payload.message.authorId === auth.currentUser.uid &&
+        !messageExists
+      ) {
+        return {
+          ...state,
+          rooms: {
+            ...state.rooms,
+            [payload.roomId]: [
+              ...state.rooms[payload.roomId],
+              { ...payload.message },
+            ],
+          },
+        }
+      } else if (
+        messageExists &&
+        payload.message.author !== messageExists.author
+      ) {
+        messageExists.author = payload.message.author
+        return { ...state }
+      } else {
         return state
-
-      return {
-        ...state,
-        rooms: {
-          ...state.rooms,
-          [payload.roomId]: [
-            ...state.rooms[payload.roomId],
-            { ...payload.message },
-          ],
-        },
       }
     }
 
     case RECEIVE_MESSAGE_UPDATE: {
       const currentChat = state.rooms[payload.roomId]
 
-      if (auth.currentUser.uid === payload.message.authorId) return state
       return {
         ...state,
         rooms: {
           ...state.rooms,
           [payload.roomId]: currentChat.map((message) =>
             message.id === payload.message.id
-              ? { ...message, message: payload.message.message }
+              ? { ...payload.message }
               : message,
           ),
         },
       }
     }
-
     default: {
       return state
     }

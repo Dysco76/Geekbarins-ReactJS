@@ -8,7 +8,7 @@ export const SET_LAST_MESSAGE = "@conversations-list/set last chat message"
 
 export const GET_CONVERSATIONS_START =
   "@conversations/get conversations from fb start"
-export const GET_CONVERSATIONS_SUCCESS =
-  "@conversations/get conversations from fb success"
+// export const GET_CONVERSATIONS_SUCCESS =
+//   "@conversations/get conversations from fb success"
 export const GET_CONVERSATIONS_ERROR =
   "@conversations/get conversations from fb error"
