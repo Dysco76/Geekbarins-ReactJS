@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
 import { firebaseAuth } from "./api/firebase"
 import { PrivateRoute, PublicRoute } from "./components"
-import { Chat, Gists, Login, SignUp } from "./pages"
+import { Chat, Login, SignUp } from "./pages"
 import { setSession, getSessionInfo } from "./store/authentication"
 import { getProfileFB } from "./store/profile"
 
@@ -38,7 +38,6 @@ export function App() {
             path={["/chat/:roomId", "/chat"]}
             component={Chat}
           />
-          <PrivateRoute session={session} path="/gists" component={Gists} />
           <PublicRoute session={session} path="/login" component={Login} />
           <PublicRoute session={session} path="/sign-up" component={SignUp} />
           <Route path="*">
