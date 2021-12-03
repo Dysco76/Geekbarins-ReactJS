@@ -1,5 +1,5 @@
 import "normalize.css"
-import { makeStyles } from "@material-ui/core"
+import { CssBaseline, makeStyles } from "@material-ui/core"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
@@ -28,6 +28,7 @@ export function App() {
 
   return (
     <div className={classes.app}>
+      <CssBaseline />
       <BrowserRouter>
         <Switch>
           <Route exact={true} path="/">

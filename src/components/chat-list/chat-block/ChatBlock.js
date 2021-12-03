@@ -5,8 +5,9 @@ import {
   ListItemText,
   makeStyles,
   Tooltip,
+  Typography,
 } from "@material-ui/core"
-import { Close, Group } from "@material-ui/icons"
+import { Close } from "@material-ui/icons"
 import { useEffect, useState, useRef, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory, useParams } from "react-router"
@@ -27,11 +28,11 @@ export const ChatBlock = ({ chat }) => {
   const wrapperRef = useRef(null)
 
   const { author = "", message = "", date = "" } = chat.lastMessage || {}
-  const authorText = author.length > 14 ? author.slice(0, 14) + "..." : author
-  const messageText =
-    (authorText + message).length > 30
-      ? message.slice(0, 30 - authorText.length) + "..."
-      : message
+  const authorText = author.length > 12 ? author.slice(0, 12) + "..." : author
+  // const messageText =
+  //   (authorText + message).length > 30
+  //     ? message.slice(0, 30 - authorText.length) + "..."
+  //     : message
 
   const [titleString, setTitleString] = useState("")
   const setChatTitleLength = useCallback(() => {
@@ -39,10 +40,12 @@ export const ChatBlock = ({ chat }) => {
     const maxVisibleLength = Math.floor(wrapperRef.current.clientWidth / 22)
     setTitleString(
       chat.title.length > maxVisibleLength
-        ? chat.title.slice(0, maxVisibleLength) + "..."
+        ? chat.title.slice(0, maxVisibleLength) + "...:"
         : chat.title,
     )
   }, [chat.title])
+
+  console.log(titleString)
 
   const [contextActions] = useState([
     {
@@ -77,23 +80,43 @@ export const ChatBlock = ({ chat }) => {
   return (
     <div className={classes.chatWrapper} key={chat.id} ref={wrapperRef}>
       <Link to={`/chat/${chat.id}`} className={classes.chatBlock}>
-        <ListItem button={true} selected={roomId === chat.id}>
+        <ListItem
+          button={true}
+          selected={roomId === chat.id}
+          classes={{
+            root: classes.listItem,
+            selected: classes.listItemSelected,
+          }}
+        >
           <ListItemAvatar>
-            <Avatar>
-              <Group />
-            </Avatar>
+            <Avatar>{chat.title[0]}</Avatar>
           </ListItemAvatar>
           <ListItemText
             primary={
               <Tooltip title={chat.title}>
-                <span className={classes.chatTitle}>{titleString}</span>
+                <Typography variant="body1" color="textPrimary" noWrap={true}>
+                  {chat.title}
+                </Typography>
               </Tooltip>
             }
             secondary={
               <>
-                {author ? `${authorText}: ${messageText}` : null}
-                <br />
-                <sub>{date}</sub>
+                <div style={{ display: "flex" }}>
+                  <span style={{ display: "block", maxWidth: "40%" }}>
+                    <Typography noWrap={true} variant="body2">
+                      {authorText && authorText + ":"}
+                    </Typography>
+                  </span>
+                  &nbsp;
+                  <span style={{ display: "block", maxWidth: "60%" }}>
+                    <Typography noWrap={true} variant="body2">
+                      {message}
+                    </Typography>
+                  </span>
+                </div>
+                <div>
+                  <sub>{date}</sub>
+                </div>
               </>
             }
           />
@@ -115,17 +138,27 @@ export const ChatBlock = ({ chat }) => {
   )
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   chatBlock: {
     textDecoration: "none",
   },
 
-  chatTitle: {
-    color: "#000",
-  },
-
   chatWrapper: {
     position: "relative",
+    borderRadius: theme.shape.borderRadius + "px",
+    overflow: "hidden",
+    height: "96px",
+  },
+
+  listItem: {
+    height: "100%",
+  },
+
+  listItemSelected: {
+    backgroundColor: theme.palette.primary.main + " !important",
+    "& span": {
+      color: theme.palette.common.white,
+    },
   },
 
   contextMenu: {
@@ -133,4 +166,4 @@ const useStyles = makeStyles({
     top: "0",
     right: "0",
   },
-})
+}))

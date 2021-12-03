@@ -1,6 +1,6 @@
 import { List, makeStyles } from "@material-ui/core"
 import { useSelector } from "react-redux"
-import { ProfileDialog, AddChatModal, Loader } from ".."
+import { AddChatModal, Loader } from ".."
 import { getConversationsInfo } from "../../store/conversations-list"
 import { ChatBlock } from "."
 
@@ -10,8 +10,7 @@ export const ChatList = () => {
   const { pending, error, conversations } = useSelector(getConversationsInfo)
 
   return (
-    <div className={classes.wrapper}>
-      <ProfileDialog />
+    <div className={classes.root}>
       {pending ? (
         <Loader width="100" height="100" color="#3F51B5" type="spin" />
       ) : (
@@ -34,31 +33,36 @@ export const ChatList = () => {
   )
 }
 
-const useStyles = makeStyles({
-  wrapper: {
-    height: "100vh",
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100%",
     boxSizing: "border-box",
-    border: "1px solid #BDBDBD",
     position: "relative",
-    padding: "20px 0 0 0",
+    padding: "0 0 5px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     overflowY: "scroll",
     overflowX: "hidden",
+    "&::-webkit-scrollbar": {
+      backgroundColor: "transparent",
+      width: "7px",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      borderRadius: "10px",
+      backgroundColor: theme.palette.grey["600"],
+      height: "200px",
+    },
   },
-
   addButtonWrapper: {
     padding: "5px",
     boxSizing: "border-box",
     marginTop: "auto",
     position: "sticky",
-    bottom: "0",
-    backgroundColor: "#fff",
-    width: "100%",
+    bottom: "10px",
+    alignSelf: "end",
   },
-
   list: {
     width: "100%",
   },
-})
+}))
