@@ -1,4 +1,5 @@
 import { Button } from "@material-ui/core"
+import { ExitToApp } from "@material-ui/icons"
 import { useSelector, useDispatch } from "react-redux"
 import { getSessionInfo, logoutThunk } from "../../store/authentication"
 
@@ -11,10 +12,11 @@ export const Logout = ({ style }) => {
   return (
     <div style={style}>
       <Button
-        variant="outlined"
+        fullWidth={true}
         style={{ color: "red" }}
         onClick={handleLogout}
         disabled={session.sessionPending}
+        startIcon={<ExitToApp />}
       >
         Logout
       </Button>

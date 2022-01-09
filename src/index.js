@@ -12,12 +12,31 @@ const theme = createTheme({
     primary: {
       main: "#7986CB",
     },
+    grey: {
+      "1000": "#141414"
+    }
   },
   mixins: {
     toolbar: {
       minHeight: 56,
       "@media (min-width:600px)": {
         minHeight: 56,
+      },
+    },
+    scrollbar: {
+      // Make background color apply only to scroll bar
+      "-webkit-background-clip": "text",
+      transition: "background-color .2s",
+      "&:hover":{
+      // Make scroll bar appear on hover
+      backgroundColor: "#757575"
+      },
+      "&::-webkit-scrollbar": {
+      width: "7px",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        borderRadius: "10px",
+        backgroundColor: "inherit",
       },
     },
   },

@@ -1,19 +1,15 @@
-// import { Grid } from "@material-ui/core"
-import { useEffect } from "react"
+import { useEffect, createContext, useState } from "react"
 import { useDispatch } from "react-redux"
-// import { useParams } from "react-router"
-// import { Switch, Route } from "react-router-dom"
-import { Layout, Header, ChatList, MessageList } from "../components"
-import {
-  // getConversationsInfo,
-  subscribeToChatsFB,
-} from "../store/conversations-list"
+import { Layout, Header, ChatList, RoomContainer } from "../components"
+import { subscribeToChatsFB } from "../store/conversations-list"
 import { subscribeToMessageRoomsFB } from "../store/message-list"
 
+export const SearchContext = createContext()
+
 export const Chat = () => {
-  // const { roomId } = useParams()
-  // const { conversations } = useSelector(getConversationsInfo)
   const dispatch = useDispatch()
+
+  const [searchString, setSearchString] = useState('')
 
   useEffect(() => {
     const unsubscribe1 = dispatch(subscribeToChatsFB())
@@ -25,6 +21,8 @@ export const Chat = () => {
     }
   }, [dispatch])
   return (
-    <Layout header={<Header />} sidebar={<ChatList />} main={<MessageList />} />
+    <SearchContext.Provider value={{searchString, setSearchString}}>
+      <Layout header={<Header />} sidebar={<ChatList />} main={<RoomContainer />} />
+    </SearchContext.Provider>
   )
 }

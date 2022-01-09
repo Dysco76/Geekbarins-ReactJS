@@ -5,7 +5,6 @@ import {
   TextField,
   makeStyles,
 } from "@material-ui/core"
-import AddCircleIcon from "@material-ui/icons/AddCircle"
 import { nanoid } from "nanoid"
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -14,6 +13,7 @@ import {
   getConversationsNames,
 } from "../../../store/conversations-list"
 import { getUserInfo, updateRoomsCreatedFB } from "../../../store/profile"
+import { chooseRandomAvatar } from "../../../utils/roomAvatars"
 
 export const AddChatForm = ({ handleModalClose }) => {
   const classes = useStyles()
@@ -72,6 +72,7 @@ export const AddChatForm = ({ handleModalClose }) => {
       },
       id: String(Date.now()).slice(-4) + nanoid(),
       title: chatName.trim(),
+      avatar: chooseRandomAvatar(),
     }
 
     dispatch(addNewChatThunk(newChat))
@@ -79,13 +80,12 @@ export const AddChatForm = ({ handleModalClose }) => {
     handleModalClose()
   }
   return (
-    <Paper className={classes.addChatWrapper}>
-      <Typography variant="h4" gutterBottom={true}>
+    <Paper className={classes.root} square={true}>
+      <Typography variant="h5" gutterBottom={true} align="left">
         Add New Room
       </Typography>
       <div className={classes.addChatInputs}>
         <TextField
-          variant="outlined"
           id="room_name"
           label="Room name"
           onChange={handleInputChange}
@@ -100,19 +100,18 @@ export const AddChatForm = ({ handleModalClose }) => {
       </div>
       <div className={classes.buttonsWrapper}>
         <Button
-          variant="contained"
           size="large"
           onClick={handleAddChat}
           color="primary"
-          startIcon={<AddCircleIcon fontSize="large" />}
+          className={classes.modalButton}
         >
           Add
         </Button>
         <Button
-          variant="contained"
           size="large"
           onClick={handleModalClose}
-          className={classes.cancelButton}
+          className={classes.modalButton}
+          color="primary"
         >
           Cancel
         </Button>
@@ -121,8 +120,8 @@ export const AddChatForm = ({ handleModalClose }) => {
   )
 }
 
-const useStyles = makeStyles({
-  addChatWrapper: {
+const useStyles = makeStyles(theme => ({
+  root: {
     position: "absolute",
     width: "580px",
     top: "50%",
@@ -131,25 +130,23 @@ const useStyles = makeStyles({
     padding: "30px",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "start",
   },
-
   addChatInputs: {
     width: "100%",
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    marginBottom: "20px",
+    margin: "20px 0",
     textAlign: "center",
   },
-
   buttonsWrapper: {
     display: "flex",
+    justifyContent: "flex-end",
+    width: "100%",
     gap: "10px",
   },
-
-  cancelButton: {
-    backgroundColor: "#f44336",
-    color: "#fff",
-  },
-})
+  modalButton: {
+    color: theme.palette.primary.light
+  }
+}))

@@ -5,7 +5,6 @@ import { AddChatForm } from "./add-chat-form"
 
 export const AddChatModal = () => {
   const classes = useStyles()
-  console.log(classes)
 
   const [openModal, setOpenModal] = useState(false)
   const handleModalOpen = () => {
