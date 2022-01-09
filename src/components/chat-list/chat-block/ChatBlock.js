@@ -1,48 +1,26 @@
 import {
-  Avatar,
-  ListItem,
   ListItemAvatar,
   ListItemText,
   makeStyles,
   Tooltip,
+  Typography,
 } from "@material-ui/core"
-import { Close, Group } from "@material-ui/icons"
-import { useEffect, useState, useRef, useCallback } from "react"
+import { Close } from "@material-ui/icons"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory, useParams } from "react-router"
-import { Link } from "react-router-dom"
-import { ContextMenu } from "../.."
-import {
-  deleteChatThunk,
-  subscribeToLastMessageFB,
-} from "../../../store/conversations-list"
+import { useHistory} from "react-router"
+import { ChatAvatar, ContextMenu } from "../.."
+import { deleteChatThunk,subscribeToLastMessageFB} from "../../../store/conversations-list"
 import { getUserInfo, updateRoomsCreatedFB } from "../../../store/profile"
 
 export const ChatBlock = ({ chat }) => {
-  const { roomId } = useParams()
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
   const { id } = useSelector(getUserInfo)
-  const wrapperRef = useRef(null)
 
   const { author = "", message = "", date = "" } = chat.lastMessage || {}
-  const authorText = author.length > 14 ? author.slice(0, 14) + "..." : author
-  const messageText =
-    (authorText + message).length > 30
-      ? message.slice(0, 30 - authorText.length) + "..."
-      : message
-
-  const [titleString, setTitleString] = useState("")
-  const setChatTitleLength = useCallback(() => {
-    if (!wrapperRef.current) return
-    const maxVisibleLength = Math.floor(wrapperRef.current.clientWidth / 22)
-    setTitleString(
-      chat.title.length > maxVisibleLength
-        ? chat.title.slice(0, maxVisibleLength) + "..."
-        : chat.title,
-    )
-  }, [chat.title])
+  const authorText = author.length > 12 ? author.slice(0, 12) + "..." : author
 
   const [contextActions] = useState([
     {
@@ -50,7 +28,7 @@ export const ChatBlock = ({ chat }) => {
       func() {
         dispatch(deleteChatThunk(this.chatId))
         dispatch(updateRoomsCreatedFB(chat.creator.id, "decrement"))
-        roomId === this.chatId && history.push("/chat")
+        history.push('/chat')
       },
       chatId: null,
     },
@@ -69,36 +47,42 @@ export const ChatBlock = ({ chat }) => {
     return unsubscribe
   }, [dispatch, chat.id])
 
-  useEffect(() => {
-    setChatTitleLength()
-    window.addEventListener("resize", setChatTitleLength)
-  }, [setChatTitleLength])
-
   return (
-    <div className={classes.chatWrapper} key={chat.id} ref={wrapperRef}>
-      <Link to={`/chat/${chat.id}`} className={classes.chatBlock}>
-        <ListItem button={true} selected={roomId === chat.id}>
-          <ListItemAvatar>
-            <Avatar>
-              <Group />
-            </Avatar>
+    <>
+          <ListItemAvatar className={classes.avatar}>
+            <ChatAvatar chat={chat} />
           </ListItemAvatar>
           <ListItemText
             primary={
-              <Tooltip title={chat.title}>
-                <span className={classes.chatTitle}>{titleString}</span>
+              <Tooltip title={chat.title} placement="top-start" >
+                <Typography variant="body1" color="textPrimary" noWrap={true}>
+                  {chat.title}
+                </Typography>
               </Tooltip>
             }
+            secondaryTypographyProps={{component:"div"}}
             secondary={
               <>
-                {author ? `${authorText}: ${messageText}` : null}
-                <br />
-                <sub>{date}</sub>
+                <div style={{ display: "flex" }}>
+                  <span style={{ display: "block", maxWidth: "40%" }}>
+                    <Typography noWrap={true} variant="body2" >
+                      {authorText && authorText + ":"}
+                    </Typography>
+                  </span>
+                  &nbsp;
+                  <span style={{ display: "block", maxWidth: "60%" }}>
+                    <Typography noWrap={true} variant="body2" >
+                      {message}
+                    </Typography>
+                  </span>
+                </div>
+                <div>
+                  <sub>{date}</sub>
+                </div>
               </>
             }
           />
-        </ListItem>
-      </Link>
+        
       {id === chat.creator.id || id === "inO6lM9qPISh0MTl8XcPgVKAsVf1" ? (
         <ContextMenu
           className={classes.contextMenu}
@@ -111,26 +95,18 @@ export const ChatBlock = ({ chat }) => {
           <Close fontSize="small" />
         </ContextMenu>
       ) : null}
-    </div>
+    </>
   )
 }
 
-const useStyles = makeStyles({
-  chatBlock: {
-    textDecoration: "none",
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    display: "flex",
+    justifyContent: "center"
   },
-
-  chatTitle: {
-    color: "#000",
-  },
-
-  chatWrapper: {
-    position: "relative",
-  },
-
   contextMenu: {
     position: "absolute",
     top: "0",
     right: "0",
   },
-})
+}))

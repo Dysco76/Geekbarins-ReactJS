@@ -2,7 +2,9 @@ import { makeStyles } from "@material-ui/core"
 import { useRef, useCallback, useEffect, memo } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams, Redirect } from "react-router"
-import { Message, Loader, SystemMessage, MessageInput } from "../"
+import { Message, 
+  Loader, 
+  SystemMessage, MessageInput } from "../"
 import {
   getMessagesById,
   getMessagesInfo,
@@ -49,21 +51,22 @@ export const MessageList = memo(() => {
   return !messages ? (
     <Redirect to="/chat/room-not-found" />
   ) : (
-    <div className={classes.wrapper}>
+    <div className={classes.root}>
       <div ref={messageList} className={classes.messageList}>
         {messages.length > 1 &&
           messages.map((message) => (
             <Message message={message} key={message.id} roomId={roomId} />
           ))}
       </div>
-
+    <div className={classes.input}>
       <MessageInput />
+    </div>
     </div>
   )
 })
 
-const useStyles = makeStyles({
-  wrapper: {
+const useStyles = makeStyles(theme => ({
+  root: {
     position: "relative",
     height: "100%",
     width: "100%",
@@ -71,6 +74,12 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    backgroundColor: theme.palette.grey["1000"]
+  },
+  input: {
+    [theme.breakpoints.up("lg")]: {
+      margin: "0 10%"
+    }
   },
   messageList: {
     paddingTop: "20px",
@@ -78,5 +87,10 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "flex-start",
     overflow: "auto",
+    ...theme.mixins.scrollbar,
+    [theme.breakpoints.up("lg")]: {
+      paddingLeft: "10%",
+      paddingRight: "10%",
+    }
   },
-})
+}))

@@ -1,4 +1,4 @@
-import { Paper, makeStyles } from "@material-ui/core"
+import { Paper, makeStyles, Typography, Tooltip } from "@material-ui/core"
 import { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { ContextMenu } from ".."
@@ -8,6 +8,7 @@ import {
   setMessageId,
 } from "../../store/conversations-list"
 import { removeMessageThunk } from "../../store/message-list"
+import { getTimeFromDate } from "../../utils"
 
 const auth = firebaseAuth.getAuth()
 
@@ -64,26 +65,30 @@ export function Message({
       elevation={3}
     >
       <div className={classes.messageContent}>
-        <p className={classes.author}>{author}:</p> <span>{message}</span>
-        <p className={classes.messageDate}>
-          <sub>{date}</sub>
-        </p>
+        <Typography variant="body1" className={classes.author}>{author}:</Typography> 
+        <Typography variant="subtitle1" className={classes.messageText}>{message} <Tooltip title={date} placement="bottom-start">
+        <Typography className={classes.messageDate} variant="caption" component="sub">
+          {getTimeFromDate(date)}
+        </Typography>
+        </Tooltip></Typography>
+        
       </div>
       <ContextMenu actions={contextActions} className={classes.contextMenu} />
     </Paper>
   )
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   message: {
+    color: theme.palette.grey["50"],
     position: "relative",
     margin: "10px 0",
     marginRight: "5%",
     alignSelf: "flex-end",
-    backgroundColor: "#e0f2f1",
+    backgroundColor: theme.palette.primary.main,
     maxWidth: "500px",
     textAlign: "left",
-    borderRadius: "5px",
+    borderRadius: "13px",
     padding: "10px",
     overflowWrap: "break-word",
 
@@ -92,9 +97,9 @@ const useStyles = makeStyles({
       width: "0px",
       height: "0px",
       position: "absolute",
-      borderLeft: "10px solid #e0f2f1",
+      borderLeft: `10px solid ${theme.palette.primary.main}`,
       borderRight: "10px solid transparent",
-      borderTop: "10px solid #e0f2f1",
+      borderTop: `10px solid ${theme.palette.primary.main}`,
       borderBottom: "10px solid transparent",
       right: "-10px",
       top: "6px",
@@ -102,44 +107,40 @@ const useStyles = makeStyles({
   },
 
   messageIncoming: {
+    color: "#64CE6C",
     marginLeft: "5%",
     alignSelf: "flex-start",
-    backgroundColor: "#fff",
-
+    backgroundColor: theme.palette.grey["A400"],
     "&::before": {
-      content: '""',
-      width: "0px",
-      height: "0px",
-      position: "absolute",
       borderLeft: "10px solid transparent",
-      borderRight: "10px solid #fff",
-      borderTop: "10px solid #fff",
+      borderRight: `10px solid ${theme.palette.grey["A400"]}`,
+      borderTop: `10px solid ${theme.palette.grey["A400"]}`,
       borderBottom: "10px solid transparent",
       left: "-10px",
-      top: "6px",
     },
   },
-
   messageContent: {
     display: "flex",
     flexDirection: "column",
-    fontSize: "20px",
   },
-
   author: {
-    color: "#4caf50",
     margin: 0,
     padding: "0 25px 0 0",
   },
-
+  messageText: {
+    color: theme.palette.grey["50"],
+    display: "flex",
+    justifyContent: "space-between"
+  },
   messageDate: {
+    color: theme.palette.grey["400"],
     margin: "0px",
+    marginLeft: "5px",
     alignSelf: "flex-end",
   },
-
   contextMenu: {
     position: "absolute",
     top: "0",
     right: "0",
   },
-})
+}))

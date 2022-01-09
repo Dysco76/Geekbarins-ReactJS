@@ -16,30 +16,6 @@ const auth = firebaseAuth.getAuth()
 
 const initialState = {
   rooms: {},
-  // room1: [
-  //   {
-  //     message: "Hello from room 1!",
-  //     author: "Bot",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
-  // room2: [
-  //   {
-  //     message: "Welcome to room 2!",
-  //     author: "Stranger",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
-  // room3: [
-  //   {
-  //     message: "You are in room 3!",
-  //     author: "Room Keeper",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
   pending: true,
   error: null,
 }
@@ -112,7 +88,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
       )
 
       if (
-        !payload.message.authorId === auth.currentUser.uid &&
+        payload.message.authorId !== auth.currentUser.uid &&
         !messageExists
       ) {
         return {

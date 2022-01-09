@@ -2,8 +2,8 @@ import {
   Icon,
   InputAdornment,
   Paper,
-  TextField,
   makeStyles,
+  Input,
 } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
 import { nanoid } from "nanoid"
@@ -75,12 +75,13 @@ export const MessageInput = () => {
   }
 
   return (
+    <div className={classes.root}>
     <Paper elevation={3} className={classes.messageForm}>
-      <TextField
+      <Input
         type="text"
         className={classes.messageInput}
         fullWidth={true}
-        placeholder="Write your message..."
+        placeholder="Type your message..."
         value={currentInput}
         onChange={(e) => {
           setCurrentInput(e.target.value)
@@ -89,8 +90,8 @@ export const MessageInput = () => {
           dispatch(handleChangeMessageValue(e.target.value, roomId))
         }}
         onKeyPress={handlePressInput}
-        InputProps={{
-          endAdornment: (
+        
+          endAdornment={(
             <InputAdornment position="end">
               <Icon
                 className={classes.sendButton}
@@ -100,27 +101,30 @@ export const MessageInput = () => {
                 <Send />
               </Icon>
             </InputAdornment>
-          ),
-        }}
+          )}
       />
     </Paper>
+    </div>
   )
 }
 
-const useStyles = makeStyles({
-  messageForm: {
+const useStyles = makeStyles(theme => ({
+  root: {
     width: "100%",
     position: "sticky",
     bottom: "0",
+    paddingBottom: "20px"
+  },
+  messageForm: {
+    backgroundColor: theme.palette.grey['A400'],
+    borderRadius: "15px",
+    overflow: 'hidden'
   },
   messageInput: {
-    backgroundColor: "#fff",
     padding: "10px",
   },
 
   sendButton: {
-    marginRight: "20px",
-    marginBottom: "10px",
     cursor: "pointer",
   },
-})
+}))
