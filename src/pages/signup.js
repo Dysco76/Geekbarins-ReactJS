@@ -1,5 +1,4 @@
 import { useDispatch } from "react-redux"
-import { Link } from "react-router-dom"
 import { AuthTemplate, AuthForm } from "../components"
 import { signUpThunk } from "../store/authentication"
 
@@ -11,7 +10,7 @@ export const SignUp = () => {
 
   return (
     <AuthTemplate
-      link={<Link to="/login">Already have an account? Login</Link>}
+    link={{path: "/login", text: "Already have an account? Login"}}
     >
       <AuthForm title="Sign Up" handleSubmit={handleSignUp} />
     </AuthTemplate>
