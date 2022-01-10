@@ -78,7 +78,7 @@ export const ChatBlock = ({ chat }) => {
                   </span>
                 </div>
                 <div>
-                  <sub>{formatDate(date)}</sub>
+                  <sub>{date && formatDate(date)}</sub>
                 </div>
               </>
             }
