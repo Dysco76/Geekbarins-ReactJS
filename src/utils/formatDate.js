@@ -1,4 +1,5 @@
-export const formatDate = (time) => {
+export const formatDate = (date) => {
+  const time = new Date(date).getTime()
   const options = {
     hour: "numeric",
     minute: "numeric",

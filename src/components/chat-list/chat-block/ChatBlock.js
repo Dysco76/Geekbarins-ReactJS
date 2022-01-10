@@ -12,6 +12,7 @@ import { useHistory} from "react-router"
 import { ChatAvatar, ContextMenu } from "../.."
 import { deleteChatThunk,subscribeToLastMessageFB} from "../../../store/conversations-list"
 import { getUserInfo, updateRoomsCreatedFB } from "../../../store/profile"
+import { formatDate } from "../../../utils"
 
 export const ChatBlock = ({ chat }) => {
   const classes = useStyles()
@@ -77,7 +78,7 @@ export const ChatBlock = ({ chat }) => {
                   </span>
                 </div>
                 <div>
-                  <sub>{date}</sub>
+                  <sub>{formatDate(date)}</sub>
                 </div>
               </>
             }
