@@ -18,7 +18,6 @@ import {
 } from "../../../store/conversations-list"
 import { editMessageThunk, sendMessageThunk } from "../../../store/message-list"
 import { getUserName } from "../../../store/profile"
-import { formatDate } from "../../../utils"
 
 export const MessageInput = () => {
   const classes = useStyles()
@@ -63,7 +62,7 @@ export const MessageInput = () => {
           {
             message: currentInput,
             author: userName,
-            date: formatDate(new Date()),
+            date: String(new Date()),
             id: String(Date.now()) + nanoid(),
             authorId: auth.currentUser.uid,
           },

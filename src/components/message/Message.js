@@ -8,7 +8,7 @@ import {
   setMessageId,
 } from "../../store/conversations-list"
 import { removeMessageThunk } from "../../store/message-list"
-import { getTimeFromDate } from "../../utils"
+import { formatDate, getTimeFromDate } from "../../utils"
 
 const auth = firebaseAuth.getAuth()
 
@@ -66,7 +66,7 @@ export function Message({
     >
       <div className={classes.messageContent}>
         <Typography variant="body1" className={classes.author}>{author}:</Typography> 
-        <Typography variant="subtitle1" className={classes.messageText}>{message} <Tooltip title={date} placement="bottom-start">
+        <Typography variant="subtitle1" className={classes.messageText}>{message} <Tooltip title={formatDate(date)} placement="bottom-start">
         <Typography className={classes.messageDate} variant="caption" component="sub">
           {getTimeFromDate(date)}
         </Typography>
