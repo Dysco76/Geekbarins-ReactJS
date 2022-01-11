@@ -21,7 +21,7 @@ export const ChatList = () => {
   
   useEffect(() => {
     if (!searchString) setFilteredConversations([...conversations])
-    else setFilteredConversations(prev => prev.filter(chat => chat.title.toLowerCase().includes(searchString.toLowerCase())))
+    else setFilteredConversations(conversations.filter(chat => chat.title.toLowerCase().includes(searchString.toLowerCase())))
   }, [searchString, conversations])
 
   return (
