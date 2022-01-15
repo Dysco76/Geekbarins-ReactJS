@@ -31,7 +31,7 @@ export const deleteChatThunk = (chatId) => async (dispatch, _, {conversationsLis
   }
 }
 
-export const setLastMessageFB = (message, chatId) => async (dispatch, _, conversationsListApi) => {
+export const setLastMessageFB = (message, chatId) => async (dispatch, _, {conversationsListApi}) => {
   try {
     await conversationsListApi.setLastMessage(message, chatId)
 
@@ -56,8 +56,12 @@ export const subscribeToChatsFB = () => (dispatch, _, {conversationsListApi}) =>
   dispatch(getConversationsStart())
 
   const callbacks = {
-    onChildAddedCb: (snapshot) => dispatch(addNewChat(snapshot.val())),
-    onChuldRemovedCb: (snapshot) => dispatch(deleteChat(snapshot.val().id))
+    onChildAddedCb: (snapshot) => {
+      dispatch(addNewChat(snapshot.val()))
+    },
+    onChildRemovedCb: (snapshot) => {
+      dispatch(deleteChat(snapshot.val().id))
+    }
   }
 
   try {

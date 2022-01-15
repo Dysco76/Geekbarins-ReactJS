@@ -14,10 +14,11 @@ export const addNewChat = async(newChat) => {
     set(child(conversationRef, newChat.id), newChat)
 }
 
-export const deleteChat = async(chatId) => {
-    const conversationRef = ref(db, `conversations/`)
+export const removeChat = async(chatId) => {
+    const conversationRef = ref(db, 'conversations/')
+    console.log(child(conversationRef, chatId))
 
-    set(child(conversationRef, chatId), null)
+    await set(child(conversationRef, chatId), null)
 }
 
 export const setLastMessage = async(message, chatId) => {
