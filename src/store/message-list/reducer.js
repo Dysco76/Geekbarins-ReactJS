@@ -1,4 +1,3 @@
-import { firebaseAuth } from "../../api/firebase"
 import {
   ADD_MESSAGE,
   DELETE_MESSAGE,
@@ -12,7 +11,6 @@ import {
   RECEIVE_MESSAGE_UPDATE,
 } from "./types"
 
-const auth = firebaseAuth.getAuth()
 
 const initialState = {
   rooms: {},
@@ -28,7 +26,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         rooms: {
           ...state.rooms,
           [payload.roomId]: [
-            ...state.rooms[payload.roomId],
+            ...(state.rooms[payload.roomId] || []),
             { ...payload.message },
           ],
         },
@@ -87,10 +85,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         (message) => message.id === payload.message.id,
       )
 
-      if (
-        payload.message.authorId !== auth.currentUser.uid &&
-        !messageExists
-      ) {
+      if (!messageExists) {
         return {
           ...state,
           rooms: {

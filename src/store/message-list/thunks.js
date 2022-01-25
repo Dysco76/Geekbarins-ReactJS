@@ -13,8 +13,8 @@ import {
   receiveMessage,
   receiveMessageUpdate,
   addMessageRoom,
+  deleteMessageRoom
 } from "./"
-import { deleteMessageRoom } from "./actions"
 
 export const getLastMessage = (state, roomId) => {
   const room = state.messageList.rooms[roomId] || []
@@ -24,9 +24,9 @@ export const getLastMessage = (state, roomId) => {
 export const sendMessageThunk = (message, roomId) => async (dispatch, _, {messageListApi}) => {
 
   try {
+    dispatch(addMessage(message, roomId))
     await messageListApi.sendMessage(message, roomId)
 
-    dispatch(addMessage(message, roomId))
     dispatch(setLastMessageFB(message, roomId))
   } catch (err) {
     console.error(err)
