@@ -74,7 +74,7 @@ export const editMessageThunk =
     }
   }
 
-export const addMessageRoomFB = (id) => async (dispatch, _, {messageListApi}) => {
+export const addMessageRoomFB = (id) => async function addNewRoom(dispatch, _, {messageListApi}) {
   const firstMessage = {
     author: "",
     date: "",
@@ -89,7 +89,7 @@ export const addMessageRoomFB = (id) => async (dispatch, _, {messageListApi}) =>
   }
 }
 
-export const removeMessageRoomFB = (id) => async (dispatch, _, {messageListApi}) => {
+export const removeMessageRoomFB = (id) => async function removeRoom(dispatch, _, {messageListApi}) {
   try {
     await messageListApi.removeMessageRoom(id)
   } catch (err) {
