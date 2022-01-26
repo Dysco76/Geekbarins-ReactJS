@@ -16,7 +16,7 @@ import {
   deleteMessageRoom
 } from "./"
 
-export const getLastMessage = (state, roomId) => {
+export const getCurrentLastMessage = (state, roomId) => {
   const room = state.messageList.rooms[roomId] || []
   return room[room.length - 1]
 }
@@ -37,11 +37,12 @@ export const removeMessageThunk =
   (messageId, roomId) => async (dispatch, getState, {messageListApi}) => {
 
     try {
+      dispatch(deleteMessage(messageId, roomId))
       await messageListApi.removeMessage(messageId, roomId)
 
-      dispatch(deleteMessage(messageId, roomId))
-      const newLastMessage = getLastMessage(getState(), roomId)
+      const newLastMessage = getCurrentLastMessage(getState(), roomId)
       dispatch(setLastMessageFB(newLastMessage, roomId))
+      return newLastMessage;
     } catch (err) {
       console.error(err)
     }
@@ -55,16 +56,17 @@ export const editMessageThunk =
     )
 
     try {
+      dispatch(editMessage(message, roomId))
       await messageListApi.editMessage(message, roomId)
-      if (existingMessage.id === getLastMessage(state, roomId).id)
+      if (existingMessage.id === getCurrentLastMessage(state, roomId).id) {
         dispatch(
           setLastMessageFB(
             { ...existingMessage, message: message.message },
             roomId,
           ),
         )
+      }
 
-      dispatch(editMessage(message, roomId))
       dispatch(clearMessageInput(roomId))
       dispatch(setMessageId("", roomId))
     } catch (err) {
@@ -151,7 +153,7 @@ export const updateMessagesAuthorNameFB =
     const updates = {}
 
     Object.keys(rooms).forEach((roomId) => {
-      const lastMessage = getLastMessage(state, roomId)
+      const lastMessage = getCurrentLastMessage(state, roomId)
       if (uid === lastMessage.authorId)
         dispatch(setLastMessageFB({ ...lastMessage, author: name }, roomId))
       rooms[roomId].forEach((message) => {

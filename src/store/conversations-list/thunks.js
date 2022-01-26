@@ -31,7 +31,7 @@ export const deleteChatThunk = (chatId) => async (dispatch, _, {conversationsLis
   }
 }
 
-export const setLastMessageFB = (message, chatId) => async (dispatch, _, {conversationsListApi}) => {
+export const setLastMessageFB = (message, chatId) => async function setMessage(dispatch, _, {conversationsListApi}) {
   try {
     await conversationsListApi.setLastMessage(message, chatId)
 
