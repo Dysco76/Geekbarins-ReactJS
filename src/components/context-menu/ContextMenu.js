@@ -45,13 +45,15 @@ export const ContextMenu = ({ actions, className, children }) => {
                   size="small"
                   fontSize="small"
                   fullWidth={true}
-                  onClick={() => {
-                    action.func()
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    action.func(e)
                     action.shouldContextClose && closePopover()
                   }}
                 >
                   {action.name}
                 </Button>
+
               </div>
             ),
         )}

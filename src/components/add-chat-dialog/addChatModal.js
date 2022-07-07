@@ -1,10 +1,7 @@
-import { Button, Modal, Backdrop, Fade, makeStyles } from "@material-ui/core"
+import { Modal, Backdrop, Fade, makeStyles, Fab } from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
 import { useState } from "react"
 import { AddChatForm } from "./add-chat-form"
-
-const useStyles = makeStyles({
-  modalButton: {},
-})
 
 export const AddChatModal = () => {
   const classes = useStyles()
@@ -20,15 +17,13 @@ export const AddChatModal = () => {
 
   return (
     <>
-      <Button
-        variant="outlined"
-        fullWidth={true}
-        size="large"
-        className={classes.modalButton}
+      <Fab
+        aria-label="add new room"
         onClick={handleModalOpen}
+        classes={{ root: classes.modalButton }}
       >
-        Add New Room
-      </Button>
+        <AddIcon fontSize="large" />
+      </Fab>
 
       <Modal
         open={openModal}
@@ -48,3 +43,15 @@ export const AddChatModal = () => {
     </>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  modalButton: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    width: "65px",
+    height: "65px",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.main,
+    },
+  },
+}))

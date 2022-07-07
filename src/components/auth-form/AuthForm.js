@@ -60,5 +60,8 @@ const useStyles = makeStyles({
   input: {
     padding: "10px 15px",
     marginBottom: "20px",
+    '&:-webkit-autofill,&:-webkit-autofill:hover,&:-webkit-autofill:focus,&:-webkit-autofill:active': {
+      '-webkit-box-shadow': '0 0 0 30px transparent inset !important',
+    }
   },
 })

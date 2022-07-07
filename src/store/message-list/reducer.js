@@ -1,4 +1,3 @@
-import { firebaseAuth } from "../../api/firebase"
 import {
   ADD_MESSAGE,
   DELETE_MESSAGE,
@@ -12,34 +11,9 @@ import {
   RECEIVE_MESSAGE_UPDATE,
 } from "./types"
 
-const auth = firebaseAuth.getAuth()
 
 const initialState = {
   rooms: {},
-  // room1: [
-  //   {
-  //     message: "Hello from room 1!",
-  //     author: "Bot",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
-  // room2: [
-  //   {
-  //     message: "Welcome to room 2!",
-  //     author: "Stranger",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
-  // room3: [
-  //   {
-  //     message: "You are in room 3!",
-  //     author: "Room Keeper",
-  //     date: formatDate(new Date()),
-  //     id: Date.now(),
-  //   },
-  // ],
   pending: true,
   error: null,
 }
@@ -52,7 +26,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         rooms: {
           ...state.rooms,
           [payload.roomId]: [
-            ...state.rooms[payload.roomId],
+            ...(state.rooms[payload.roomId] || []),
             { ...payload.message },
           ],
         },
@@ -111,10 +85,7 @@ export const messagesReducer = (state = initialState, { type, payload }) => {
         (message) => message.id === payload.message.id,
       )
 
-      if (
-        !payload.message.authorId === auth.currentUser.uid &&
-        !messageExists
-      ) {
+      if (!messageExists) {
         return {
           ...state,
           rooms: {

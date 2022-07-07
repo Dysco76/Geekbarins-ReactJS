@@ -64,20 +64,18 @@ export const EditProfileForm = ({ handleEditClose, info }) => {
   }
 
   return (
-    <Paper className={classes.editProfileWrapper}>
-      <Typography variant="h4" gutterBottom={true}>
+    <Paper className={classes.root} square={true}>
+      <Typography variant="h5" gutterBottom={true} className={classes.heading}>
         Edit Profile
       </Typography>
       <div className={classes.editProfileInputs}>
         <TextField
-          variant="outlined"
           label="Name"
           id="name"
           onChange={handleInputChange}
           value={userInfo.name}
         />
         <TextField
-          variant="outlined"
           label="Phone"
           id="phone"
           onChange={handleInputChange}
@@ -89,15 +87,20 @@ export const EditProfileForm = ({ handleEditClose, info }) => {
           </span>
         ))}
       </div>
-      <Button variant="outlined" onClick={handleProfileSave}>
+      <div className={classes.buttonsWrapper}>
+      <Button className={classes.formButton} onClick={handleProfileSave}>
         Save
       </Button>
+      <Button className={classes.formButton} onClick={handleEditClose}>
+        Discard
+      </Button>
+      </div>
     </Paper>
   )
 }
 
-const useStyles = makeStyles({
-  editProfileWrapper: {
+const useStyles = makeStyles(theme => ({
+  root: {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -108,21 +111,30 @@ const useStyles = makeStyles({
     alignItems: "center",
     width: "565px",
   },
-
+  heading: {
+    alignSelf: "flex-start"
+  }, 
   editProfileInputs: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    marginBottom: "20px",
-    width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  margin: "20px 0",
+  width: "100%",
   },
-
   errorText: {
     color: "red",
     textAlign: "center",
   },
-
   profileInput: {
     width: "100%",
   },
-})
+  buttonsWrapper: {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "100%",
+    gap: "10px",
+  },
+  formButton: {
+    color: theme.palette.primary.light
+  }
+}))

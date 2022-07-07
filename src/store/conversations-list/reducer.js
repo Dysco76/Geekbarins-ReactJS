@@ -29,23 +29,6 @@ export const conversationsReducer = (
   { type, payload },
 ) => {
   switch (type) {
-    case HANDLE_CHANGE_MESSAGE_VALUE: {
-      return payload.value.length > 999 ? state : setInputValue(state, payload)
-    }
-
-    case CLEAR_MESSAGE_INPUT:
-      return setInputValue(state, payload)
-
-    case SET_MESSAGE_ID:
-      return {
-        ...state,
-        conversations: state.conversations.map((chat) =>
-          chat.id === payload.roomId
-            ? { ...chat, messageId: payload?.messageId || null }
-            : chat,
-        ),
-      }
-
     case ADD_NEW_CHAT:
       return {
         pending: false,
@@ -63,11 +46,27 @@ export const conversationsReducer = (
             ],
       }
 
-    case DELETE_CHAT:
+      case DELETE_CHAT:
+        return {
+          ...state,
+          conversations: state.conversations.filter(
+            (chat) => chat.id !== payload.id,
+          ),
+        }
+
+    case HANDLE_CHANGE_MESSAGE_VALUE: 
+      return payload.value.length > 999 ? state : setInputValue(state, payload)
+
+    case CLEAR_MESSAGE_INPUT:
+      return setInputValue(state, payload)
+
+    case SET_MESSAGE_ID:
       return {
         ...state,
-        conversations: state.conversations.filter(
-          (chat) => chat.id !== payload.id,
+        conversations: state.conversations.map((chat) =>
+          chat.id === payload.roomId
+            ? { ...chat, messageId: payload?.messageId || null }
+            : chat,
         ),
       }
 
@@ -83,8 +82,7 @@ export const conversationsReducer = (
 
     case GET_CONVERSATIONS_START:
       return { ...state, pending: true }
-    // case GET_CONVERSATIONS_SUCCESS:
-    //   return { ...state, pending: false, conversations: payload }
+
     case GET_CONVERSATIONS_ERROR:
       return { ...state, pending: false, error: payload }
 

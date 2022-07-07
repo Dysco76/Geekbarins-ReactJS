@@ -1,14 +1,4 @@
 import {
-  ref,
-  // get,
-  child,
-  set,
-  onChildChanged,
-  onChildAdded,
-  onChildRemoved,
-} from "firebase/database"
-import { db } from "../../api/firebase"
-import {
   addMessageRoomFB,
   getMessagesSuccess,
   removeMessageRoomFB,
@@ -22,31 +12,28 @@ import {
   getConversationsError,
 } from "./"
 
-export const addNewChatThunk = (newChat) => async (dispatch, getState) => {
-  const conversationRef = ref(db, `conversations/`)
+export const addNewChatThunk = (newChat) => async (dispatch, _, {conversationsListApi}) => {
 
   try {
-    await set(child(conversationRef, newChat.id), newChat)
+    await conversationsListApi.addNewChat(newChat)
 
     dispatch(addMessageRoomFB(newChat.id))
   } catch (err) {
     console.error(err)
   }
 }
-export const deleteChatThunk = (chatId) => async (dispatch) => {
-  const conversationRef = ref(db, `conversations/`)
+export const deleteChatThunk = (chatId) => async (dispatch, _, {conversationsListApi}) => {
   try {
-    await set(child(conversationRef, chatId), null)
+    await conversationsListApi.deleteChat(chatId)
     dispatch(removeMessageRoomFB(chatId))
   } catch (err) {
     console.error(err)
   }
 }
 
-export const setLastMessageFB = (message, chatId) => async (dispatch) => {
+export const setLastMessageFB = (message, chatId) => async function setMessage(dispatch, _, {conversationsListApi}) {
   try {
-    const conversationRef = ref(db, `conversations/${chatId}`)
-    set(child(conversationRef, "lastMessage"), message)
+    await conversationsListApi.setLastMessage(message, chatId)
 
     dispatch(setLastMessage(message, chatId))
   } catch (err) {
@@ -54,28 +41,31 @@ export const setLastMessageFB = (message, chatId) => async (dispatch) => {
   }
 }
 
-export const subscribeToLastMessageFB = (chatId) => (dispatch) => {
-  const conversationsRef = ref(db, `conversations/${chatId}`)
-  const unsubscribe = onChildChanged(conversationsRef, (snapshot) => {
+export const subscribeToLastMessageFB = (chatId) => (dispatch, _, {conversationsListApi}) => {
+  const onChildChangedCb = (snapshot) => {
     if (snapshot.key === "lastMessage") {
       dispatch(setLastMessage(snapshot.val(), chatId))
     }
-  })
+  }
+  const unsubscribe = conversationsListApi.subscribeToLastMessage(chatId, onChildChangedCb)
 
   return unsubscribe
 }
 
-export const subscribeToChatsFB = () => (dispatch) => {
+export const subscribeToChatsFB = () => (dispatch, _, {conversationsListApi}) => {
   dispatch(getConversationsStart())
-  const conversationsRef = ref(db, `conversations/`)
+
+  const callbacks = {
+    onChildAddedCb: (snapshot) => {
+      dispatch(addNewChat(snapshot.val()))
+    },
+    onChildRemovedCb: (snapshot) => {
+      dispatch(deleteChat(snapshot.val().id))
+    }
+  }
 
   try {
-    const unsubscribeAdded = onChildAdded(conversationsRef, (snapshot) => {
-      dispatch(addNewChat(snapshot.val()))
-    })
-    const unsubscribeRemoved = onChildRemoved(conversationsRef, (snapshot) => {
-      dispatch(deleteChat(snapshot.val().id))
-    })
+    const {unsubscribeAdded, unsubscribeRemoved} = conversationsListApi.subscribeToChats(callbacks)
     dispatch(getMessagesSuccess())
     return () => {
       unsubscribeAdded()
@@ -85,23 +75,6 @@ export const subscribeToChatsFB = () => (dispatch) => {
     dispatch(getConversationsError(err.message))
   }
 }
-
-// export const getConversationFB = () => async (dispatch) => {
-//   dispatch(getConversationsStart())
-//   try {
-//     const conversationsRef = ref(db, "conversations")
-//     const snapshot = await get(conversationsRef)
-
-//     const conversations = []
-
-//     snapshot.forEach((snap) => {
-//       conversations.push(snap.val())
-//     })
-//     dispatch(getConversationsSuccess(conversations))
-//   } catch (err) {
-//     dispatch(getConversationsError(err.message))
-//   }
-// }
 
 export const subscribeToConversationsAndMessagesFB = () => async (dispatch) => {
   dispatch(subscribeToMessageRoomsFB())

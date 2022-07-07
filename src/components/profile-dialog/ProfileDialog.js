@@ -1,5 +1,4 @@
 import {
-  Drawer,
   Paper,
   Button,
   IconButton,
@@ -11,8 +10,9 @@ import {
   Backdrop,
   Fade,
   makeStyles,
+  Popover,
 } from "@material-ui/core"
-import { Close, AccountCircle } from "@material-ui/icons"
+import { Close, AccountCircle, Edit } from "@material-ui/icons"
 import React, { useState, useCallback } from "react"
 import { useSelector } from "react-redux"
 import { EditProfileForm, Logout } from "../"
@@ -25,9 +25,11 @@ export const ProfileDialog = () => {
 
   const [openProfile, setOpenProfile] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
+  const [anchorEl, setAnchorEl] = React.useState(null)
 
-  const handleProfileOpen = () => {
+  const handleProfileOpen = (event) => {
     setOpenProfile(true)
+    setAnchorEl(event.target)
   }
 
   const handleProfileClose = () => {
@@ -43,25 +45,22 @@ export const ProfileDialog = () => {
   }, [setOpenEdit])
 
   return (
-    <div className={classes.wrapper}>
-      <Button
-        color="primary"
-        startIcon={<AccountCircle />}
-        className={classes.openButton}
+    <>
+      <IconButton
+        // color="primary"
         onClick={handleProfileOpen}
       >
-        Profile
-      </Button>
-      <Drawer
+        <AccountCircle fontSize="large"/>
+      </IconButton>
+      <Popover
         open={openProfile}
-        anchor="left"
-        variant="persistent"
-        classes={{
-          docked: classes.docked,
-          paper: classes.paper,
+        onClose={handleProfileClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left"
         }}
       >
-        <Paper className={classes.paper}>
           <IconButton
             data-action="close-profile"
             onClick={handleProfileClose}
@@ -74,24 +73,23 @@ export const ProfileDialog = () => {
               <AccountCircle className={classes.avatarIcon} />
             </Avatar>
             <List className={classes.profileList}>
-              <ListItem>
-                <ListItemText className={classes.profileLi}>
-                  Name: {name}
+              <ListItem className={classes.profileLi}>
+                <ListItemText primaryTypographyProps={{variant: "body2"}} style={{margin: "0"}}>
+                  {name}
                 </ListItemText>
               </ListItem>
-              <ListItem>
-                <ListItemText className={classes.profileLi}>
-                  Phone: {phone}
+              <ListItem className={classes.profileLi}>
+                <ListItemText primaryTypographyProps={{variant: "body2"}} style={{margin: "0"}}>
+                  {phone || '123 456 789'}
                 </ListItemText>
               </ListItem>
             </List>
-            <Button variant="outlined" onClick={handleEditOpen}>
+            <Button onClick={handleEditOpen} fullWidth={true} startIcon={<Edit />}>
               Edit Profile
             </Button>
+          <Logout style={{width: "100%"}} />
           </Paper>
-          <Logout style={{ margin: "auto 0 20px" }} />
-        </Paper>
-      </Drawer>
+      </Popover>
 
       <Modal
         open={openEdit}
@@ -111,54 +109,49 @@ export const ProfileDialog = () => {
           </>
         </Fade>
       </Modal>
-    </div>
+    </>
   )
 }
 
 const useStyles = makeStyles({
-  paper: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-
-  openButton: {
-    marginLeft: "20px",
-  },
-
+  // root: {
+  //   display: "flex",
+  //   justifyContent: "center",
+  //   width: "auto"
+  // },
   closeButton: {
     position: "absolute",
     right: "5px",
     top: "5px",
   },
-
   infoWrapper: {
+    width: "350px",
     padding: "20px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    width: "100%",
     boxSizing: "border-box",
   },
-
   avatar: {
     width: "70px",
     height: "70px",
   },
-
   avatarIcon: {
     width: "100%",
     height: "100%",
   },
-
   profileList: {
     width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "5px 0",
+    marginBottom: "20px"
   },
-
   profileLi: {
     wordWrap: "break-word",
+    textAlign: "center",
+    padding: "0"
   },
 })

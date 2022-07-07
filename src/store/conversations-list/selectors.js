@@ -6,6 +6,8 @@ export const getExistingMessageId = (roomId) => (state) =>
   state.conversations.conversations.find((chat) => chat.id === roomId)
     ?.messageId || null
 
+export const getConversationById = (roomId) => (state) => state.conversations.conversations.find((chat) => chat.id === roomId)
+
 export const getConversationsInfo = (state) => state.conversations
 
 export const getConversationsNames = (state) =>

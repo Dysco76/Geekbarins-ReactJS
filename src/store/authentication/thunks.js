@@ -1,5 +1,3 @@
-import { firebaseAuth } from "../../api/firebase"
-
 import { updateProfileFB } from "../profile"
 import {
   authStart,
@@ -9,19 +7,11 @@ import {
   authError,
 } from "."
 
-const auth = firebaseAuth.getAuth()
-
-export const signUpThunk = (email, password) => async (dispatch) => {
+export const signUpThunk = (email, password) => async (dispatch, _, {authenticationApi}) => {
   dispatch(authStart())
 
-  const auth = firebaseAuth.getAuth()
-
   try {
-    const res = await firebaseAuth.createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    )
+    const res = await authenticationApi.signUpWithEmailAndPassword(email, password)
 
     const newUser = {
       id: res.user.uid,
@@ -36,26 +26,22 @@ export const signUpThunk = (email, password) => async (dispatch) => {
   }
 }
 
-export const loginThunk = (email, password) => async (dispatch) => {
+export const loginThunk = (email, password) => async (dispatch, _, {authenticationApi}) => {
   dispatch(authStart())
 
   try {
-    const res = await firebaseAuth.signInWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    )
+    const res = await authenticationApi.sloginWithEmailAndPassword(email, password,)
     dispatch(loginSuccess(res.user))
   } catch (err) {
     dispatch(authError(err.code))
   }
 }
 
-export const logoutThunk = () => async (dispatch) => {
+export const logoutThunk = () => async (dispatch, _, {authenticationApi}) => {
   dispatch(authStart())
 
   try {
-    await firebaseAuth.signOut(auth)
+    await authenticationApi.logout()
     dispatch(logoutSuccess())
   } catch (err) {
     dispatch(authError(err.code))

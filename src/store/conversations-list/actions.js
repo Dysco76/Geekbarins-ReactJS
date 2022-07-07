@@ -9,10 +9,21 @@ import {
   SET_LAST_MESSAGE,
 } from "./types"
 
+export const addNewChat = (newChat) => ({
+  type: ADD_NEW_CHAT,
+  payload: newChat,
+})
+
+export const deleteChat = (chatId) => ({
+  type: DELETE_CHAT,
+  payload: { id: chatId },
+})
+
 export const handleChangeMessageValue = (value, roomId) => ({
   type: HANDLE_CHANGE_MESSAGE_VALUE,
   payload: { value, roomId },
 })
+
 export const clearMessageInput = (roomId) => ({
   type: CLEAR_MESSAGE_INPUT,
   payload: { roomId },
@@ -23,14 +34,6 @@ export const setMessageId = (messageId, roomId) => ({
   payload: { messageId, roomId },
 })
 
-export const addNewChat = (newChat) => ({
-  type: ADD_NEW_CHAT,
-  payload: newChat,
-})
-export const deleteChat = (chatId) => ({
-  type: DELETE_CHAT,
-  payload: { id: chatId },
-})
 export const setLastMessage = (message, chatId) => ({
   type: SET_LAST_MESSAGE,
   payload: { message, id: chatId },
@@ -39,10 +42,7 @@ export const setLastMessage = (message, chatId) => ({
 export const getConversationsStart = () => ({
   type: GET_CONVERSATIONS_START,
 })
-// export const getConversationsSuccess = (conversations) => ({
-//   type: GET_CONVERSATIONS_SUCCESS,
-//   payload: conversations,
-// })
+
 export const getConversationsError = (error) => ({
   type: GET_CONVERSATIONS_ERROR,
   payload: error,
